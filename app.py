@@ -66,16 +66,15 @@ class RootWidget(BoxLayout):
     def on_mqtt_message(self, userdata, rc1, message ):
         json_str = str(message.payload.decode("utf-8"))
         json_obj = None
-        print("received message =",json_str)
+        #print("received message =",json_str)
         json_obj = json_parser.loads( json_str )
         #
         for i in range(len(json_obj['e'])):
             mac     = json_obj['e'][i]['m'];
             station = json_obj['st'];
-            print(mac)
             #
             if station in self.stations:
-                print("this will execute")
+                print("station exist")
             else:
                  self.stations.append(station)
 
@@ -91,7 +90,7 @@ class RootWidget(BoxLayout):
                 self.beacons[mac] = {}
                 self.beacons[mac][station] = {
                     'rssi':  json_obj['e'][i]['r'],
-                    'timestamp': datetime.now()
+                    'timestamp': datetime.now().timestamp
                 }
 
             #print(self.beacons)
