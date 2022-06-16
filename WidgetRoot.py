@@ -27,7 +27,7 @@ class RootWidget(BoxLayout):
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
-        self.register_event_type('on_custom_event')  
+        self.register_event_type('on_ble_update_event')  
 
     @mainthread
     def cmd_connect(self):
@@ -87,7 +87,8 @@ class RootWidget(BoxLayout):
                     'timestamp': datetime.now().timestamp
                 }
 
-            #print(self.beacons)
+            # Сообщение что данные готовы
+            self.dispatch('on_ble_update_event', 'test message')
 
-    def on_custom_event(self, *args):
+    def on_ble_update_event(self, *args):
         pass

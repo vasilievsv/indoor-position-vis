@@ -12,7 +12,11 @@ class DashboardCanvas(FloatLayout):
         super(DashboardCanvas, self).__init__(**kwargs)
         self.size_hint = (1,1)
         self.orientation = "vertical"
+        #self.parent.bind(on_ble_update_event=self.on_ble_update_event)
   
     def handle_drag_release(self, index, drag_widget):
         #self.add_widget(drag_widget, index)
         print('drag stop')
+
+    def on_ble_update_event(self, *args):
+        pass
