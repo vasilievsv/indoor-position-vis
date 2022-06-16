@@ -14,14 +14,9 @@ class DashboardCanvas(FloatLayout):
         self.size_hint = (1,1)
         self.orientation = "vertical"
   
-    def compare_pos_to_widget(self, widget, pos):
-        #if self.orientation == 'vertical':
-        #    return 'before' if pos[1] >= widget.center_y else 'after'
-        #return 'before' if pos[0] < widget.center_x else 'after'
-        pass
-
-    #def handle_drag_release(self, index, drag_widget):
-    #    #self.add_widget(drag_widget, index)
+    def handle_drag_release(self, index, drag_widget):
+        #self.add_widget(drag_widget, index)
+        print('drag stop')
 
 class DashboardIcon(DragBehavior, Image):
 
@@ -30,7 +25,8 @@ class DashboardIcon(DragBehavior, Image):
         self.drag_timeout = 10000000
         self.drag_distance = 0
         self.drag_rectangle = [self.x, self.y, self.width, self.height]
-        self.size_hint = (0.1,0.1)
+        self.size=(48, 48)
+        self.size_hint=(None, None)
 
     def on_pos(self, *args):
         self.drag_rectangle = [self.x, self.y, self.width, self.height]
@@ -40,8 +36,18 @@ class DashboardIcon(DragBehavior, Image):
 
     def initiate_drag(self):
         # during a drag, we remove the widget from the original location
-        self.parent.remove_widget(self)
+        #self.parent.remove_widget(self)
+        print('sss')
 
+    #def on_touch_down(self, touch):
+    #    #if self.collide_point(*touch.pos):
+    #    #    if touch.button == "right":
+    #    #        print('Right mouse clicked on ')
+    #    #    elif touch.button == "left":
+    #    #        print('Left mouse clicked on ')
+    #    #    else:
+    #    #        print(self.id)
+    #    #print("on_touch_down")
 
 
 

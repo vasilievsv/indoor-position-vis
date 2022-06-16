@@ -5,10 +5,10 @@ import paho.mqtt.client as mqtt
 
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.clock import Clock, mainthread
 from kivy.config import Config
 from kivy.factory import Factory
 from kivy.animation import Animation
-from kivy.clock import Clock, mainthread
 
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -31,7 +31,8 @@ class RootWidget(BoxLayout):
 
     @mainthread
     def connect_to_broker(self):
-        threading.Thread(target=self.infinite_loop).start()
+        if self.stop.is_set() == False:
+            threading.Thread(target=self.infinite_loop).start()
 
     def on_mqtt_connect(client, userdata, flags, rc):
         print("Connected with result code "+str(rc))
