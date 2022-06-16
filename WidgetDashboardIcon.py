@@ -6,18 +6,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout 
 
-
-class DashboardCanvas(FloatLayout):
-
-    def __init__(self,**kwargs):
-        super(DashboardCanvas, self).__init__(**kwargs)
-        self.size_hint = (1,1)
-        self.orientation = "vertical"
-  
-    def handle_drag_release(self, index, drag_widget):
-        #self.add_widget(drag_widget, index)
-        print('drag stop')
-
 class DashboardIcon(DragBehavior, Image):
 
     def __init__(self, **kwargs):
@@ -49,16 +37,3 @@ class DashboardIcon(DragBehavior, Image):
     #    #        print(self.id)
     #    #print("on_touch_down")
 
-
-
-
-class MyDashboardWidget(Widget):
-
-    def on_touch_down(self, touch):
-        print("on_touch_down")
-
-    def on_touch_move(self,touch):
-        print("on_touch_move")
-
-    def on_touch_up(self,touch):
-        print("on_touch_up")

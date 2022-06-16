@@ -35,14 +35,14 @@ RootWidget:
                 size        : 48,16
                 size_hint   : .5, 1
                 text        : 'connect'
-                on_press    : root.connect_to_broker()
+                on_press    : root.cmd_connect()
 
     #
     # Список Станций
     #
         BoxLayout:
             id          : MyStationList
-            orientation :'horizontal'
+            orientation :'vertical'
             padding     : 1
             spacing     : 1
 
@@ -52,7 +52,25 @@ RootWidget:
                 Rectangle:
                     size: self.size
                     pos: self.pos
+            Label:
+                text: '25:76:05:5d:2e:ab'
+                markup: True
+                shorten: True
+                size_hint_y: None
+                height: 30
 
+            Label:
+                text: '25:76:05:5d:2e:ab'
+                markup: True
+                shorten: True
+                size_hint_y: None
+                height: 30
+            Label:
+                text: '25:76:05:5d:2e:ab'
+                markup: True
+                shorten: True
+                size_hint_y: None
+                height: 30                
 #
 # Dashboard
 #
