@@ -1,7 +1,14 @@
+import threading
+import time
+import sys
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.config import Config
-
+from kivy.factory import Factory
+from kivy.animation import Animation
+from kivy.clock import Clock, mainthread
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 
@@ -9,46 +16,49 @@ from random import random
  
 import MyDashboardWidget
 
-import threading
-import time
-
-from kivy.app import App
-from kivy.lang import Builder
-from kivy.factory import Factory
-from kivy.animation import Animation
-from kivy.clock import Clock, mainthread
-from kivy.uix.boxlayout import BoxLayout
 
 Config.set('graphics', 'resizable', '0')
-Config.set('graphics', 'width', '800') 
+Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '400')
+
+import paho.mqtt.client as mqtt
 
 
 class RootWidget(BoxLayout):
 
     stop = threading.Event()
-
-    def start_second_thread(self, l_text):
-        threading.Thread(target=self.second_thread, args=(l_text,)).start()
-
-    def second_thread(self, label_text):
-        # Start a new thread with an infinite loop and stop the current one.
-        threading.Thread(target=self.infinite_loop).start()
+    client= mqtt.Client("client-001")
 
     @mainthread
-    def update_label_text(self, new_text):
-        self.lab_2.text = new_text
+    def connect_to_broker(self):
+        threading.Thread(target=self.infinite_loop).start()
+
+    def on_mqtt_connect(client, userdata, flags, rc):
+        print("Connected with result code "+str(rc))
+        self.client.subscribe('beacons/office')
+    
+    def on_mqtt_message():
+        print("received message =",str(message.payload.decode("utf-8")))
+
 
     def infinite_loop(self):
-        iteration = 0
-        while True:
-            if self.stop.is_set():
-                # Stop running this thread so the main Python process can exit.
-                return
-            iteration += 1
-            print('Infinite loop, iteration {}.'.format(iteration))
-            time.sleep(1)
+        try:
+            self.client.connect('192.168.4.1')
+            self.client.loop_start()
+            self.client.on_connect=self.on_mqtt_connect
+            self.client.on_message=self.on_mqtt_message
+            
+        except:
+            print("Oops!", sys.exc_info()[0], "occurred.")
 
+        #iteration = 0
+        #while True:
+        #    if self.stop.is_set():
+        #        # Stop running this thread so the main Python process can exit.
+        #        return
+        #    iteration += 1
+        #    print('Infinite loop, iteration {}.'.format(iteration))
+        #    time.sleep(1)
 
 class Application(App):
 
@@ -63,7 +73,6 @@ class Application(App):
 
     def clear_canvas(self, obj):
         self.painter.canvas.clear()
-
 
 if __name__ == '__main__':
     Application().run()
