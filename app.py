@@ -8,5 +8,5 @@ with open('./example/data/demo.json') as read_file:
 json_string = json_parser.dumps(superDemoExample)
 
 print ( type( superDemoExample ) )
-print ("DUMP JSON")
-print (json_string)
+print ("DUMP JSON" )
+print ( json_string )
