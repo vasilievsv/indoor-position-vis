@@ -16,5 +16,3 @@ class DashboardCanvas(FloatLayout):
     def handle_drag_release(self, index, drag_widget):
         #self.add_widget(drag_widget, index)
         print('drag stop')
-
-

@@ -25,6 +25,10 @@ class RootWidget(BoxLayout):
     beacons = {};
     stations = [];
 
+    def __init__(self, **kwargs):
+        super(RootWidget, self).__init__(**kwargs)
+        self.register_event_type('on_custom_event')  
+
     @mainthread
     def cmd_connect(self):
         if self.stop.is_set() == False:
@@ -57,11 +61,12 @@ class RootWidget(BoxLayout):
         json_obj = None
         #print("received message =",json_str)
         json_obj = json_parser.loads( json_str )
-        #
+        
+        # Обход dict по индексу
         for i in range(len(json_obj['e'])):
             mac     = json_obj['e'][i]['m'];
             station = json_obj['st'];
-            #
+            # Игнорим известные станции иначе запоминаем
             if station in self.stations:
                 pass
             else:
@@ -83,3 +88,6 @@ class RootWidget(BoxLayout):
                 }
 
             #print(self.beacons)
+
+    def on_custom_event(self, *args):
+        pass
