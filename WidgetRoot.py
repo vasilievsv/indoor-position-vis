@@ -13,6 +13,8 @@ import json as json_parser
 import paho.mqtt.client as mqtt
 import threading
 from kivy.clock import Clock, mainthread
+import time
+import sys
 
 class RootWidget(BoxLayout):
 
@@ -61,7 +63,7 @@ class RootWidget(BoxLayout):
             station = json_obj['st'];
             #
             if station in self.stations:
-                print("station exist")
+                pass
             else:
                  self.stations.append(station)
 
@@ -72,7 +74,7 @@ class RootWidget(BoxLayout):
             else:
                 if {mac, station} <= self.beacons.keys():
                     # Remove old record
-                    del (self.beacons[mac][station]) 
+                    del (self.beacons[mac][station])
                 # Insert new record
                 self.beacons[mac] = {}
                 self.beacons[mac][station] = {
