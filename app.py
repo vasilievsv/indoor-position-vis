@@ -1,9 +1,12 @@
+from curses import has_key
+from genericpath import exists
 import sys
 import time
 import threading
 import json as json_parser
 import paho.mqtt.client as mqtt
 from random import random
+import math
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -16,7 +19,7 @@ from kivy.uix.behaviors import DragBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
- 
+from datetime import datetime
 import MyDashboardWidget
 
 Config.set('graphics', 'resizable', '0')
@@ -70,6 +73,28 @@ class RootWidget(BoxLayout):
             mac     = json_obj['e'][i]['m'];
             station = json_obj['st'];
             print(mac)
+            #
+            if station in self.stations:
+                print("this will execute")
+            else:
+                 self.stations.append(station)
+
+            if mac in self.stations:
+                # Dont measure stations rssi
+                # with other stations.
+                pass
+            else:
+                if {mac, station} <= self.beacons.keys():
+                    # Remove old record
+                    del (self.beacons[mac][station]) 
+                # Insert new record
+                self.beacons[mac] = {}
+                self.beacons[mac][station] = {
+                    'rssi':  json_obj['e'][i]['r'],
+                    'timestamp': datetime.now()
+                }
+
+            #print(self.beacons)
 
 class Application(App):
 
