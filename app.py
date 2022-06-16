@@ -23,7 +23,6 @@ Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '400')
 
-
 class RootWidget(BoxLayout):
 
     stop    = threading.Event()
@@ -34,20 +33,27 @@ class RootWidget(BoxLayout):
         if self.stop.is_set() == False:
             threading.Thread(target=self.infinite_loop).start()
 
-    def on_mqtt_connect(client, userdata, flags, rc):
+    def on_mqtt_connect(_client, userdata, flags, rc, t1):
         print("Connected with result code "+str(rc))
-        self.client.subscribe('beacons/office')
+        _client.client.subscribe('beacons/office')
     
     def on_mqtt_message():
         print("received message =",str(message.payload.decode("utf-8")))
 
 
     def infinite_loop(self):
+        connack_rc = -1
         try:
-            self.client.connect('192.168.4.1')
-            self.client.loop_start()
             self.client.on_connect=self.on_mqtt_connect
             self.client.on_message=self.on_mqtt_message
+            self.client.connect('192.168.4.1')
+            
+            self.client.loop_start()
+            while connack_rc == -1:
+                if self.stop.is_set():
+                    return
+                time.sleep(0.5)
+            print("CONNACK reason code: %d" % (connack_rc))
             
         except:
             print("Oops!", sys.exc_info()[0], "occurred.")
@@ -60,8 +66,6 @@ class RootWidget(BoxLayout):
         #    iteration += 1
         #    print('Infinite loop, iteration {}.'.format(iteration))
         #    time.sleep(1)
-
-
 
 class Application(App):
 

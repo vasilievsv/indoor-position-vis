@@ -60,9 +60,7 @@ RootWidget:
         orientation:'horizontal'
         padding: 10
         spacing: 1
-                
-
-
+        
         DashboardCanvas:
             id: id_1
             canvas.before:
@@ -74,3 +72,10 @@ RootWidget:
             
             DashboardIcon:
                 id:id_2
+                pos:root.ids.id_1.pos
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 0.25
+                    Rectangle:
+                        size: root.ids.id_1.size
+                        pos: root.ids.id_1.pos
