@@ -1,11 +1,17 @@
 #:kivy 1.0
 
-BoxLayout:
+RootWidget:
     orientation:'horizontal'
+
+    Button:
+        id: but_1
+        font_size: 20
+        text: 'Start second thread'
+        on_press: root.start_second_thread('123')
 
     BoxLayout:
         orientation:'vertical'
-        padding: 1
+        padding: 10
         spacing: 1
         size_hint: (1, None)
         width: 10
@@ -24,7 +30,7 @@ BoxLayout:
         spacing: 1
         width: 10
         height: root.height
-        size_hint: (1, None)
+
         canvas.before:
             Color:
                 rgb: 1, 1, 1
