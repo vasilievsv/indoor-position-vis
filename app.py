@@ -1,6 +1,7 @@
-import threading
-import time
 import sys
+import time
+import threading
+import paho.mqtt.client as mqtt
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -8,6 +9,8 @@ from kivy.config import Config
 from kivy.factory import Factory
 from kivy.animation import Animation
 from kivy.clock import Clock, mainthread
+
+from kivy.uix.behaviors import DragBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
@@ -16,18 +19,15 @@ from random import random
  
 import MyDashboardWidget
 
-
 Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '400')
 
-import paho.mqtt.client as mqtt
-
 
 class RootWidget(BoxLayout):
 
-    stop = threading.Event()
-    client= mqtt.Client("client-001")
+    stop    = threading.Event()
+    client  = mqtt.Client("client-001")
 
     @mainthread
     def connect_to_broker(self):
@@ -60,6 +60,8 @@ class RootWidget(BoxLayout):
         #    print('Infinite loop, iteration {}.'.format(iteration))
         #    time.sleep(1)
 
+
+
 class Application(App):
 
     def on_stop(self):
@@ -74,5 +76,6 @@ class Application(App):
     def clear_canvas(self, obj):
         self.painter.canvas.clear()
 
+# entry_point
 if __name__ == '__main__':
     Application().run()

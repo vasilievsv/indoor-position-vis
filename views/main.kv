@@ -6,46 +6,45 @@ RootWidget:
 # Боковая панель
 #
     BoxLayout:
-        id: MyBeaconsList
-        orientation:'vertical'
-        padding: 10
-        spacing: 10
-        width: 10
-        height: root.height
-        size_hint: 0.25, 1
+        orientation :'vertical'
+        padding     : 10
+        spacing     : 10
+        height      : root.height
+        size_hint   : 0.25, 1
 
     #
     # Контейнер для кнопок
     #
         BoxLayout:
-            orientation:'horizontal'
-            padding: 1
-            spacing: 1
-            height: root.height
-            size_hint: 1, 0.1
+            orientation :'horizontal'
+            padding     : 1
+            spacing     : 1
+            height      : root.height
+            size_hint   : 1, 0.1
 
             canvas.before:
                 Color:
                     rgba: 1, 0, 0, 0.25
                 Rectangle:
                     size: self.size
-                    pos: self.pos
+                    pos : self.pos
 
             Button:
-                id: but_1
-                font_size: 9
-                size: 48,16
-                size_hint: .5, 1
-                text: 'connect'
-                on_press: root.connect_to_broker()
+                id          : BTN_CONNECT_TO_BROKER
+                font_size   : 9
+                size        : 48,16
+                size_hint   : .5, 1
+                text        : 'connect'
+                on_press    : root.connect_to_broker()
 
     #
     # Список Станций
     #
         BoxLayout:
-            orientation:'horizontal'
-            padding: 1
-            spacing: 1
+            id          : MyStationList
+            orientation :'horizontal'
+            padding     : 1
+            spacing     : 1
 
             canvas.before:
                 Color:
@@ -53,7 +52,7 @@ RootWidget:
                 Rectangle:
                     size: self.size
                     pos: self.pos
-                    
+
 #
 # Dashboard
 #
@@ -63,7 +62,7 @@ RootWidget:
         spacing: 1
                 
         MyDashboardWidget:
-            id: myvideo
+            id: MyDashboard
             
             canvas.before:
                 Color:
