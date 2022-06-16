@@ -1,4 +1,37 @@
 #:kivy 1.0
 
-Button:
-    text: 'Hello from test.kv'
+BoxLayout:
+    orientation:'horizontal'
+
+    BoxLayout:
+        orientation:'vertical'
+        padding: 1
+        spacing: 1
+        size_hint: (1, None)
+        width: 10
+        height: root.height
+
+        canvas.before:
+            Color:
+                rgb: 0.2, 0.2, 0.2
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+    BoxLayout:
+        orientation:'horizontal'
+        padding: 1
+        spacing: 1
+        width: 10
+        height: root.height
+        size_hint: (1, None)
+        canvas.before:
+            Color:
+                rgb: 1, 1, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                
+
+        MyDashboardWidget:
+            id: myvideo
