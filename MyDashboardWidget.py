@@ -7,18 +7,36 @@ from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout 
 
 
-class DashboardCanvas(DragBehavior, FloatLayout):
+class DashboardCanvas(FloatLayout):
 
+    def __init__(self,**kwargs):
+        super(DashboardCanvas, self).__init__(**kwargs)
+        self.size_hint = (1,1)
+        self.orientation = "vertical"
+  
     def compare_pos_to_widget(self, widget, pos):
         #if self.orientation == 'vertical':
         #    return 'before' if pos[1] >= widget.center_y else 'after'
         #return 'before' if pos[0] < widget.center_x else 'after'
         pass
 
-    def handle_drag_release(self, index, drag_widget):
-        self.add_widget(drag_widget, index)
+    #def handle_drag_release(self, index, drag_widget):
+    #    #self.add_widget(drag_widget, index)
 
 class DashboardIcon(DragBehavior, Image):
+
+    def __init__(self, **kwargs):
+        super(DashboardIcon, self).__init__(**kwargs)
+        self.drag_timeout = 10000000
+        self.drag_distance = 0
+        self.drag_rectangle = [self.x, self.y, self.width, self.height]
+        self.size_hint = (0.1,0.1)
+
+    def on_pos(self, *args):
+        self.drag_rectangle = [self.x, self.y, self.width, self.height]
+
+    def on_size(self, *args):
+        self.drag_rectangle = [self.x, self.y, self.width, self.height]
 
     def initiate_drag(self):
         # during a drag, we remove the widget from the original location

@@ -61,12 +61,16 @@ RootWidget:
         padding: 10
         spacing: 1
                 
-        MyDashboardWidget:
-            id: MyDashboard
-            
+
+
+        DashboardCanvas:
+            id: id_1
             canvas.before:
                 Color:
                     rgba: 1, 1, 1, 0.25
                 Rectangle:
                     size: self.size
                     pos: self.pos
+            
+            DashboardIcon:
+                id:id_2
