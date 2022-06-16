@@ -5,13 +5,13 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.config import Config
 
-import MyDashboardWidget
-import RootWidget
+import WidgetRoot
+import WidgetDashboardIcon
+import WidgetDashboardCanvas
 
 Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '400')
-
 
 class Application(App):
 
