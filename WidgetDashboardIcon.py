@@ -1,8 +1,8 @@
-from kivy.uix.widget import Widget
-from kivy.uix.behaviors import DragBehavior
 from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
+from kivy.uix.widget import Widget
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.behaviors import DragBehavior
 from kivy.uix.floatlayout import FloatLayout 
 
 class DashboardIcon(DragBehavior, Image):

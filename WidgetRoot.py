@@ -1,22 +1,23 @@
-from curses import has_key
-from genericpath import exists
+import sys
+import time
+import threading
+import math
+
+import json as json_parser
+import paho.mqtt.client as mqtt
+
+from kivy.factory import Factory
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
-from datetime import datetime
-import math
-from kivy.factory import Factory
-from kivy.animation import Animation
-
-import json as json_parser
-import paho.mqtt.client as mqtt
-import threading
 from kivy.clock import Clock, mainthread
-import time
-import sys
+from kivy.event import EventDispatcher
 
-class RootWidget(BoxLayout):
+from datetime import datetime
+
+
+class RootWidget(BoxLayout,EventDispatcher):
 
     stop    = threading.Event()         # флаг выхода из потока
     client  = mqtt.Client("client-001")
@@ -26,8 +27,8 @@ class RootWidget(BoxLayout):
     stations = [];  #
 
     def __init__(self, **kwargs):
-        super(RootWidget, self).__init__(**kwargs)
         self.register_event_type('on_ble_update_event')  
+        super(RootWidget, self).__init__(**kwargs)
 
     @mainthread
     def cmd_connect(self):
