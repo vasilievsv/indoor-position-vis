@@ -15,10 +15,6 @@ class DashboardIcon(DragBehavior, Image):
         self.size       = (48, 48)
         self.size_hint  = (None, None)
 
-    def on_parent(self, parent,a1):
-        if parent:
-            parent.bind( on_ble_update_event=self.on_ble_update_event )
-
     def on_pos(self, *args):
         self.drag_rectangle = [self.x, self.y, self.width, self.height]
 
@@ -28,19 +24,18 @@ class DashboardIcon(DragBehavior, Image):
     def initiate_drag(self):
         # during a drag, we remove the widget from the original location
         #self.parent.remove_widget(self)
-        print('sss')
+        print('initiate_drag')
 
-    def on_ble_update_event(self, *args):
-        print('test')
-        pass
-
+#
+# Drag & Drop
+#
     #def on_touch_down(self, touch):
     #    return True
-    #    #if self.collide_point(*touch.pos):
-    #    #    if touch.button == "right":
-    #    #        print('Right mouse clicked on ')
-    #    #    elif touch.button == "left":
-    #    #        print('Left mouse clicked on ')
-    #    #    else:
-    #    #        print(self.id)
-    #    #print("on_touch_down")
+    #    if self.collide_point(*touch.pos):
+    #        if touch.button == "right":
+    #            print('Right mouse clicked on ')
+    #        elif touch.button == "left":
+    #            print('Left mouse clicked on ')
+    #        else:
+    #            print(self.id)
+    #    print("on_touch_down")

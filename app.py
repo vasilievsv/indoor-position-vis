@@ -4,7 +4,7 @@ from kivy.config import Config
 
 import WidgetRoot
 import WidgetDashboardIcon
-import WidgetDashboardCanvas
+import WidgetDashboard
 
 Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '800')

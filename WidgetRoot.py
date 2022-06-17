@@ -6,6 +6,7 @@ import math
 import json as json_parser
 import paho.mqtt.client as mqtt
 
+from kivy.app import App
 from kivy.factory import Factory
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -33,6 +34,16 @@ class RootWidget(BoxLayout,EventDispatcher):
     def cmd_connect(self):
         if self.stop.is_set() == False:
             threading.Thread(target=self.thread_mqtt_loop).start()
+    #
+    # Все элементы готовы
+    #
+    def on_kv_post(self, base_widget):
+        # Поиск элементов с методом on_ble_update_event
+        for child_id in self.ids:
+            #print(child_id)
+            if hasattr(self.ids[child_id], "on_ble_update_event"):
+                self.bind(on_ble_update_event=self.ids[child_id].on_ble_update_event)
+        pass
 
     def thread_mqtt_loop(self):
         connack_rc = -1
@@ -47,8 +58,8 @@ class RootWidget(BoxLayout,EventDispatcher):
                     return
                 time.sleep(0.5)
             print("CONNACK reason code: %d" % (connack_rc))
-            self.client.loop_stop()
             self.client.disconnect()
+            self.client.loop_stop()
         except:
             print("Oops!", sys.exc_info()[0], "occurred.")
 
@@ -59,13 +70,13 @@ class RootWidget(BoxLayout,EventDispatcher):
     def on_mqtt_message(self, userdata, rc1, message ):
         json_str = str(message.payload.decode("utf-8"))
         json_obj = None
-        #print("received message =",json_str)
+        print("received message =",json_str)
         json_obj = json_parser.loads( json_str )
         
         # 
         for i in range(len(json_obj['e'])):
             # Обход dict по индексу
-            mac     = json_obj['e'][i]['m'];    # Вытаскиваем MAC vzrjd
+            mac     = json_obj['e'][i]['m'];    # Вытаскиваем MAC адрес
             station = json_obj['st'];
             # Игнорим известные станции иначе запоминаем
             if station in self.stations:
@@ -91,9 +102,12 @@ class RootWidget(BoxLayout,EventDispatcher):
 
             # Сообщение что данные готовы
             self.dispatch('on_ble_update_event', 'test message')
-            for child in self.children[:]:
-                    if child.dispatch('on_ble_update_event', 'test'):
-                        return True
+
+            print('mqtt data parse complete')
 
     def on_ble_update_event(self, *args):
-        return False
+        pass
+
+    def on_child(self, parent,a1):
+        print('on_child')
+        pass
