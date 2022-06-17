@@ -38,7 +38,7 @@ class RootWidget(BoxLayout,EventDispatcher):
     # Все элементы подготовлены
     #
     def on_kv_post(self, base_widget):
-        # Поиск элементов с методом on_ble_update_event
+        # Поиск всех элементов с методом on_ble_update_event
         for child_id in self.ids:
             #print(child_id)
             if hasattr(self.ids[child_id], "on_ble_update_event"):
@@ -54,7 +54,7 @@ class RootWidget(BoxLayout,EventDispatcher):
 
             self.client.loop_start()
             while connack_rc == -1:
-                if self.stop.is_set(): # флаг на выход
+                if self.stop.is_set(): # флаг выхода из потока
                     return
                 time.sleep(0.5)
             print("CONNACK reason code: %d" % (connack_rc))
@@ -70,15 +70,17 @@ class RootWidget(BoxLayout,EventDispatcher):
     def on_mqtt_message(self, userdata, rc1, message ):
         json_str = str(message.payload.decode("utf-8"))
         json_obj = None
-        print("received message =",json_str)
-        json_obj = json_parser.loads( json_str )
         
-        # 
+        # отладка
+        # print("received message =",json_str)
+        
+        # Разбор пакета
+        json_obj = json_parser.loads( json_str )
         for i in range(len(json_obj['e'])):
             # Обход dict по индексу
             mac     = json_obj['e'][i]['m'];    # Вытаскиваем MAC адрес
             station = json_obj['st'];
-            # Игнорим известные станции иначе запоминаем
+            # Игнорим известные станции
             if station in self.stations:
                 pass
             else:
@@ -90,17 +92,17 @@ class RootWidget(BoxLayout,EventDispatcher):
                 pass
             else:
                 if {mac, station} <= self.beacons.keys():
-                    # Remove old record
                     del (self.beacons[mac][station])
-                
+
                 # Новая запись
                 self.beacons[mac] = {}
                 self.beacons[mac][station] = {
                     'rssi':  json_obj['e'][i]['r'],
-                    'timestamp': datetime.now().timestamp
+                    'timestamp': datetime.now().timestamp()
                 }
         # данные готовы
-        self.dispatch('on_ble_update_event', 'test message')
+        _tuple = (self.stations, self.beacons)
+        self.dispatch('on_ble_update_event', _tuple)
 
     def on_ble_update_event(self, *args):
         pass
