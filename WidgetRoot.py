@@ -16,7 +16,6 @@ from kivy.event import EventDispatcher
 
 from datetime import datetime
 
-
 class RootWidget(BoxLayout,EventDispatcher):
 
     stop    = threading.Event()         # флаг выхода из потока
@@ -49,7 +48,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                 time.sleep(0.5)
             print("CONNACK reason code: %d" % (connack_rc))
             self.client.loop_stop()
-            
+            self.client.disconnect()
         except:
             print("Oops!", sys.exc_info()[0], "occurred.")
 
@@ -63,9 +62,10 @@ class RootWidget(BoxLayout,EventDispatcher):
         #print("received message =",json_str)
         json_obj = json_parser.loads( json_str )
         
-        # Обход dict по индексу
+        # 
         for i in range(len(json_obj['e'])):
-            mac     = json_obj['e'][i]['m'];
+            # Обход dict по индексу
+            mac     = json_obj['e'][i]['m'];    # Вытаскиваем MAC vzrjd
             station = json_obj['st'];
             # Игнорим известные станции иначе запоминаем
             if station in self.stations:
@@ -81,7 +81,8 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if {mac, station} <= self.beacons.keys():
                     # Remove old record
                     del (self.beacons[mac][station])
-                # Insert new record
+                
+                # Новая запись
                 self.beacons[mac] = {}
                 self.beacons[mac][station] = {
                     'rssi':  json_obj['e'][i]['r'],
@@ -90,6 +91,9 @@ class RootWidget(BoxLayout,EventDispatcher):
 
             # Сообщение что данные готовы
             self.dispatch('on_ble_update_event', 'test message')
+            for child in self.children[:]:
+                    if child.dispatch('on_ble_update_event', 'test'):
+                        return True
 
     def on_ble_update_event(self, *args):
-        pass
+        return False
