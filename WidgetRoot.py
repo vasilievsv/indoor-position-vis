@@ -18,12 +18,12 @@ import sys
 
 class RootWidget(BoxLayout):
 
-    stop    = threading.Event()
+    stop    = threading.Event()         # флаг выхода из потока
     client  = mqtt.Client("client-001")
 
-    errors = [];
-    beacons = {};
-    stations = [];
+    errors = [];    #
+    beacons = {};   # 
+    stations = [];  #
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
