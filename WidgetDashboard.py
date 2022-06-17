@@ -31,9 +31,9 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 # Drag & Drop
 #
     def handle_drag_release(self, index, drag_widget):
-        pass
         #self.add_widget(drag_widget, index)
         #print('drag stop')
+        pass
 
 #
 # Трилатерация
