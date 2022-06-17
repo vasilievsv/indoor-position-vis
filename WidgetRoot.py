@@ -35,7 +35,7 @@ class RootWidget(BoxLayout,EventDispatcher):
         if self.stop.is_set() == False:
             threading.Thread(target=self.thread_mqtt_loop).start()
     #
-    # Все элементы готовы
+    # Все элементы подготовлены
     #
     def on_kv_post(self, base_widget):
         # Поиск элементов с методом on_ble_update_event
@@ -99,11 +99,8 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'rssi':  json_obj['e'][i]['r'],
                     'timestamp': datetime.now().timestamp
                 }
-
-            # Сообщение что данные готовы
-            self.dispatch('on_ble_update_event', 'test message')
-
-            print('mqtt data parse complete')
+        # данные готовы
+        self.dispatch('on_ble_update_event', 'test message')
 
     def on_ble_update_event(self, *args):
         pass
