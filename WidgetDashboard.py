@@ -17,16 +17,23 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
     def on_ble_update_event(self, *args):
         print("WidgetDashboard.on_ble_update_event");
         
-        _station = args[1][0]
-        _beacons = args[1][1]
+        _station        = args[1][0]
+        _beacons        = args[1][1]
+        beaconCoords    = {};
+        _widthMeters    = 1.85
 
-        for i in _station:
-            print("СТАНЦИЯ:")
-            print(i)
-
-        for j in _beacons:
-            print("МАРКЕРЫ:")
-            print(j)
+        for key in _beacons:
+            if len(_beacons[key])  >= 3 and  len(_station) >= 3:
+                # CALCULATE POSITION COORDINATES
+                coords = get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
+                if coords != None:
+                    self.beaconCoords[key] = coords;
+                else:
+                    print("Failed to locate:");
+                    print(_beacons[key]);
+                pass
+            else:
+                pass
 
         pass
 
@@ -38,31 +45,10 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         #self.add_widget(drag_widget, index)
         pass
 
-    def updateBeaconPositions(self):
-        # Beacons
-#        beaconCoords = {};
-#        if this.props.beacons:
-#             b = self.props.beacons;
-#            for key in b:
-#                if(Object.keys(b[key]).length >= 3 && Object.keys(this.props.stations).length >= 3):
-#                    // CALCULATE POSITION COORDINATES
-#                    let coords = locate( b[key], this.props.stations, (this.props.width / this.props.widthMeters));
-#                    if coords !== null:
-#                        self.beaconCoords[key] = coords;
-#                    else:
-#                        console.log("Failed to locate:");
-#                        console.debug(b[key]);
-#                    pass
-#                else:
-#
-#                pass
-#            pass
-
-        pass
 #
 # Трилатерация
 #
-    def locate (beacon, stations, px_meter):
+    def get_coord (beacon, stations, px_meter):
 
         _keysSorted = reversed(sorted (beacon.keys()))
 
@@ -94,3 +80,35 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _d = math.pow(10, ((_P-rssi) / (10*_n)) ) # (n ranges from 2 to 4)
         
         return _d*px_meter
+
+
+
+#        if(typeof b === 'undefined' || Object.keys(b).length === 0) 
+#        {
+#            return [];
+#        }
+#
+#        for (let beacon in b) {
+#            for (let mac in b[beacon]) {
+#                if(typeof objectList[mac] !== 'undefined')
+#                {
+#                    if(objectList[mac].rssi < b[beacon][mac].rssi) 
+#                    {
+#                        objectList = merge(objectList, b[beacon]);
+#                    }
+#                } else 
+#                {
+#                    objectList = merge(objectList, b[beacon]);
+#                }
+#            }
+#        }
+
+#        for(let beacon in objectList) 
+#        {
+#            list.push({mac: beacon, rssi: objectList[beacon].rssi, timestamp: objectList[beacon].timestamp})
+#        }
+#
+#        return list.sort(function(a, b)
+#        {
+#            return a.rssi - b.rssi;
+#        }).reverse();
