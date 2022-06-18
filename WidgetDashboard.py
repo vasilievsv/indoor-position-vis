@@ -38,6 +38,27 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         #self.add_widget(drag_widget, index)
         pass
 
+    def updateBeaconPositions(self):
+        # Beacons
+#        beaconCoords = {};
+#        if this.props.beacons:
+#             b = self.props.beacons;
+#            for key in b:
+#                if(Object.keys(b[key]).length >= 3 && Object.keys(this.props.stations).length >= 3):
+#                    // CALCULATE POSITION COORDINATES
+#                    let coords = locate( b[key], this.props.stations, (this.props.width / this.props.widthMeters));
+#                    if coords !== null:
+#                        self.beaconCoords[key] = coords;
+#                    else:
+#                        console.log("Failed to locate:");
+#                        console.debug(b[key]);
+#                    pass
+#                else:
+#
+#                pass
+#            pass
+
+        pass
 #
 # Трилатерация
 #
