@@ -13,7 +13,9 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         super(WidgetDashboard, self).__init__(**kwargs)
         self.size_hint = (1,1)
         self.orientation = "vertical"
-    
+#
+# Event Handler
+#
     def on_ble_update_event(self, *args):
         print("WidgetDashboard.on_ble_update_event");
         
@@ -23,10 +25,11 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _widthMeters    = 1.85
 
         for key in _beacons:
-            print(key+" st:"+str(len(_beacons[key])) )
+            #print(key+" st:"+str(len(_beacons[key])) )
             
             if len(_beacons[key])  >= 3 and  len(_station) >= 3:
-                ## CALCULATE POSITION COORDINATES
+                print(key+" :" + str(_beacons[key]) )
+                #print("CALCULATE POSITION COORDINATES")
                 #coords = get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
                 #if coords != None:
                 #    self.beaconCoords[key] = coords;
@@ -36,6 +39,9 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
                 pass
             else:
                 pass
+        pass
+
+    def on_ble_station_update(self,*args):
         pass
 
 #
@@ -59,7 +65,7 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             [ stations[_keysSorted[2]].x, stations[_keysSorted[2]].y,  _ble_calculate_distance( beacon[_keysSorted[2]].rssi, px_meter)]
         ]
 
-        _output = 0 #trilat(intpu)
+        _output = 0 #trilat(_input)
         
         _coord = {
         'x':int(math.floor(2.3)),

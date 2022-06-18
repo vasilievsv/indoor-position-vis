@@ -119,6 +119,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'y':0 # Math.floor((Math.random() * 300) + 1)
                 }
                 self.dispatch('on_ble_station_update', station)
+            pass
 
             # 
             if mac in self.stations:
@@ -128,30 +129,19 @@ class RootWidget(BoxLayout,EventDispatcher):
             else:
                 if {mac, station} <= self.beacons.keys():
                    del (self.beacons[mac][station])
-                else:
-                    # Если нет в списке
-                    if mac not in self.beacons :
-                        self.beacons[mac] = {}
-                    
-                    self.beacons[mac][station] = {
-                        'rssi':  json_obj['e'][i]['r'],
-                        'timestamp': datetime.now().timestamp()
-                    }
-            
-            #self.sortedBeacons = self._beaconMacList()
-
+                
+                # Если нет в списке
+                if mac not in self.beacons :
+                    self.beacons[mac] = {}
+                
+                self.beacons[mac][station] = {
+                    'rssi':  json_obj['e'][i]['r'],
+                    'timestamp': datetime.now().timestamp()
+                }
+            pass
+        
         # данные готовы
         _tuple = (self.stations, self.beacons)
         self.dispatch('on_ble_update_event', _tuple)
 
-        pass
-
-#
-# Utils
-#
-    def _beaconMacList (self): 
-        objectList = {}
-        list = []
-        b = self.beacons
-        
         pass
