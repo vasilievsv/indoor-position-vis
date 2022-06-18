@@ -23,18 +23,19 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _widthMeters    = 1.85
 
         for key in _beacons:
+            print(key+" st:"+str(len(_beacons[key])) )
+            
             if len(_beacons[key])  >= 3 and  len(_station) >= 3:
-                # CALCULATE POSITION COORDINATES
-                coords = get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
-                if coords != None:
-                    self.beaconCoords[key] = coords;
-                else:
-                    print("Failed to locate:");
-                    print(_beacons[key]);
+                ## CALCULATE POSITION COORDINATES
+                #coords = get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
+                #if coords != None:
+                #    self.beaconCoords[key] = coords;
+                #else:
+                #    print("Failed to locate:");
+                #    print(_beacons[key]);
                 pass
             else:
                 pass
-
         pass
 
 #

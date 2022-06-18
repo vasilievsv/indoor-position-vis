@@ -127,14 +127,16 @@ class RootWidget(BoxLayout,EventDispatcher):
                 pass
             else:
                 if {mac, station} <= self.beacons.keys():
-                    del (self.beacons[mac][station])
-
-                # Новая запись
-                self.beacons[mac] = {}
-                self.beacons[mac][station] = {
-                    'rssi':  json_obj['e'][i]['r'],
-                    'timestamp': datetime.now().timestamp()
-                }
+                   del (self.beacons[mac][station])
+                else:
+                    # Если нет в списке
+                    if mac not in self.beacons :
+                        self.beacons[mac] = {}
+                    
+                    self.beacons[mac][station] = {
+                        'rssi':  json_obj['e'][i]['r'],
+                        'timestamp': datetime.now().timestamp()
+                    }
             
             #self.sortedBeacons = self._beaconMacList()
 
