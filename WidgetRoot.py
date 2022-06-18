@@ -118,7 +118,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'x':0,# Math.floor((Math.random() * 500) + 1)
                     'y':0 # Math.floor((Math.random() * 300) + 1)
                 }
-                self.dispatch('on_ble_station_update', station)
+                self.dispatch('on_ble_station_update', station, self.stations[station])
             pass
 
             # 

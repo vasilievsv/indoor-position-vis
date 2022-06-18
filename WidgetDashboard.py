@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.floatlayout import FloatLayout 
+from kivy.clock import Clock, mainthread
 import math
 
 class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
@@ -16,6 +17,11 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 #
 # Event Handler
 #
+    @mainthread
+    def on_ble_station_update(self, *args):
+        obj = args[1]
+        pass
+
     def on_ble_update_event(self, *args):
         print("WidgetDashboard.on_ble_update_event");
         
