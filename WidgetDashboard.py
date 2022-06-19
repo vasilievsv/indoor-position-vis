@@ -1,4 +1,6 @@
 import math
+import numpy as np
+
 from kivy.clock import Clock, mainthread
 from kivy.event import EventDispatcher
 from kivy.uix.image import Image
@@ -43,7 +45,7 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 #print(key+" :" + str(_beacons[key]) )
                 
-                # Иконки маячков
+                # Иконки 
                 if key not in self.beacon_coords:
                     self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
                     self.add_widget( self.beacon_coords.get(key) )
@@ -71,8 +73,7 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 #
     def _ble_get_coord(self, beacon, stations, px_meter):
 
-        _sorted = sorted (beacon.keys());
-        _beacons = _sorted #reversed( )
+        _beacons =  sorted (beacon.keys());
         st = self.station_coords
 
         _input =[
@@ -81,8 +82,8 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             [ st.get(_beacons[2]).pos[0],  st.get(_beacons[2]).pos[1],  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
         ]
 
-
-        _output = 0 #trilat(_input)
+        print(_input)
+        _output = self.trilateration(_input)
         
         _coord = (
             int(math.floor(2.3)),
@@ -101,3 +102,26 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _d = math.pow(10, ((_P-int(rssi)) / (10*_n)) ) # (n ranges from 2 to 4)
         
         return _d*px_meter
+
+    def trilateration( self, data ):
+        x1 = data[0][0]
+        y1 = data[0][1]
+        r1 = data[0][2]
+        
+        x2 = data[1][0]
+        y2 = data[1][1]
+        r2 = data[1][2]
+        
+        x3 = data[2][0]
+        y3 = data[2][1]
+        r3 = data[2][2]
+
+        A = 2*x2 - 2*x1
+        B = 2*y2 - 2*y1
+        C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
+        D = 2*x3 - 2*x2
+        E = 2*y3 - 2*y2
+        F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
+        x = (C*E - F*B) / (E*A - B*D)
+        y = (C*D - A*F) / (B*D - A*E)
+        return (x,y)

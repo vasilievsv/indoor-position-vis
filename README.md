@@ -6,7 +6,7 @@ python --version
 
 pip3 install kivy
 pip3 install paho-mqtt
-pip3 install windows-curses
+pip3 install lmfit
 ```
 
 #### Полезные ссылки
