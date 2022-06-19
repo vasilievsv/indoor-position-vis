@@ -75,17 +75,11 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _beacons = _sorted #reversed( )
         st = self.station_coords
 
-        print("STATIONS")
-        print(st)
-        print("BEACONS")
-        print(_beacons)
-
-
-        #_input =[
-        #    [ st.get(_beacons[0]).pos(0),  st.get(_beacons[0]).pos(1),  self._ble_calculate_distance( beacon[_beacons[0]]['rssi'], px_meter )],
-        #    [ st.get(_beacons[1]).pos(0),  st.get(_beacons[1]).pos(1),  self._ble_calculate_distance( beacon[_beacons[1]]['rssi'], px_meter )],
-        #    [ st.get(_beacons[2]).pos(0),  st.get(_beacons[2]).pos(1),  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
-        #]
+        _input =[
+            [ st.get(_beacons[0]).pos[0],  st.get(_beacons[0]).pos[1],  self._ble_calculate_distance( beacon[_beacons[0]]['rssi'], px_meter )],
+            [ st.get(_beacons[1]).pos[0],  st.get(_beacons[1]).pos[1],  self._ble_calculate_distance( beacon[_beacons[1]]['rssi'], px_meter )],
+            [ st.get(_beacons[2]).pos[0],  st.get(_beacons[2]).pos[1],  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
+        ]
 
 
         _output = 0 #trilat(_input)
