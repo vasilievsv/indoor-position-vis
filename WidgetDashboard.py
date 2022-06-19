@@ -111,29 +111,6 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         
         return _d*px_meter
 
-    def trilateration( self, data ):
-        x1 = data[0][0]
-        y1 = data[0][1]
-        r1 = data[0][2]
-        
-        x2 = data[1][0]
-        y2 = data[1][1]
-        r2 = data[1][2]
-        
-        x3 = data[2][0]
-        y3 = data[2][1]
-        r3 = data[2][2]
-
-        A = 2*x2 - 2*x1
-        B = 2*y2 - 2*y1
-        C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
-        D = 2*x3 - 2*x2
-        E = 2*y3 - 2*y2
-        F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
-        x = (C*E - F*B) / (E*A - B*D)
-        y = (C*D - A*F) / (B*D - A*E)
-        return (x,y)
-
     def Trilat(self, input):
         
         A = -24.514
