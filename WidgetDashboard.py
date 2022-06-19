@@ -25,44 +25,38 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 #
     @mainthread
     def on_ble_new_station(self, *args):
-        _obj = args[1]
-        _key = args[0]
+        _key = args[1]
+        _obj = args[2]
 
-        if _obj not in self.station_coords:
+        if _key not in self.station_coords:
             self.station_coords[_key] = WidgetStation( source='assets/icon_1.png', pos=self.pos)
             self.add_widget( self.station_coords.get(_key) )
-    
+ 
     @mainthread
     def on_ble_update_event(self, *args):
-        #print("WidgetDashboard.on_ble_update_event");
-        
         _station        = args[1][0]
         _beacons        = args[1][1]
 
         _widthMeters    = 1.85
 
         for key in _beacons:
-            # CALCULATE POSITION COORDINATES
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
-                print(key+" :" + str(_beacons[key]) )
+                #print(key+" :" + str(_beacons[key]) )
                 
+                # Иконки маячков
                 if key not in self.beacon_coords:
-                    tmp =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
-                    self.beacon_coords[key] = tmp
-                    self.add_widget( tmp )
+                    self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
+                    self.add_widget( self.beacon_coords.get(key) )
                     pass
 
+                # CALCULATE POSITION COORDINATES
                 coords = self._ble_get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
                 if coords != None:
-                    self.beacon_coords.get(key).pos.x = coords['x'];
-                    self.beacon_coords.get(key).pos.y = coords['y'];
+                   self.beacon_coords.get(key).pos = coords
                 else:
                     print("Failed to locate:"+key+str(_beacons[key]));
             pass
         pass
-
-        for i in self.station_coords:
-            print(self.station_coords.get(i).pos)
 
 #
 # Drag & Drop
@@ -78,27 +72,32 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
     def _ble_get_coord(self, beacon, stations, px_meter):
 
         _sorted = sorted (beacon.keys());
-        _keysSorted = _sorted #reversed( )
+        _beacons = _sorted #reversed( )
+        st = self.station_coords
 
-        _input =[
-            [ stations[_keysSorted[0]]['x'], stations[_keysSorted[0]]['y'],  self._ble_calculate_distance( beacon[_keysSorted[0]]['rssi'], px_meter)],
-            [ stations[_keysSorted[1]]['x'], stations[_keysSorted[1]]['y'],  self._ble_calculate_distance( beacon[_keysSorted[1]]['rssi'], px_meter)],
-            [ stations[_keysSorted[2]]['x'], stations[_keysSorted[2]]['y'],  self._ble_calculate_distance( beacon[_keysSorted[2]]['rssi'], px_meter)]
-        ]
+        print("STATIONS")
+        print(st)
+        print("BEACONS")
+        print(_beacons)
+
+
+        #_input =[
+        #    [ st.get(_beacons[0]).pos(0),  st.get(_beacons[0]).pos(1),  self._ble_calculate_distance( beacon[_beacons[0]]['rssi'], px_meter )],
+        #    [ st.get(_beacons[1]).pos(0),  st.get(_beacons[1]).pos(1),  self._ble_calculate_distance( beacon[_beacons[1]]['rssi'], px_meter )],
+        #    [ st.get(_beacons[2]).pos(0),  st.get(_beacons[2]).pos(1),  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
+        #]
+
 
         _output = 0 #trilat(_input)
         
-        _coord = {
-        'x':int(math.floor(2.3)),
-        'y':int(math.floor(2.3))
-        }
+        _coord = (
+            int(math.floor(2.3)),
+            int(math.floor(2.3))
+        )
 
         return _coord
     
     def _ble_calculate_distance(self, rssi, px_meter):
-        # ITAG -70 ... -94
-        #    Samsung -73 ... -95
-        #
         # RSSI = TxPower - 10 * n * lg(d)
         # n = 2...4
         # d = 10^(TxPower - RSSI) / (10 * n))
