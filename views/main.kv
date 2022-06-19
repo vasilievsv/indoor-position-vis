@@ -2,6 +2,24 @@
 
 RootWidget:
     orientation:'horizontal'
+
+#
+# Dashboard
+#
+    BoxLayout:
+        orientation:'horizontal'
+        padding: 10
+        spacing: 1
+        
+        WidgetDashboard:
+            id:id_dashboard
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 0.25
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+        
 #
 # Боковая панель
 #
@@ -37,9 +55,9 @@ RootWidget:
                 text        : 'connect'
                 on_press    : root.cmd_connect()
 
-    #
-    # Список Станций
-    #
+#
+# Список Станций
+#
         BoxLayout:
             id          : id_station_enums
             orientation :'vertical'
@@ -52,20 +70,3 @@ RootWidget:
                 Rectangle:
                     size: self.size
                     pos: self.pos
-#
-# Dashboard
-#
-    BoxLayout:
-        orientation:'horizontal'
-        padding: 10
-        spacing: 1
-        
-        WidgetDashboard:
-            id:id_dashboard
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 0.25
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-        

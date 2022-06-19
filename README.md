@@ -1,4 +1,4 @@
-#### Визуализатор положения маячков
+#### Визуализатор положения
 
 #### Установка gui фреймфорка
 ```
@@ -7,6 +7,12 @@ python --version
 pip3 install kivy
 pip3 install paho-mqtt
 pip3 install lmfit
+```
+
+#### Описание метода 
+```
+https://github.com/jonl40/Capstone2020
+https://www.researchgate.net/publication/306063099_Beacon_based_indoor_positioning_system_using_weighted_centroid_localization_approach
 ```
 
 #### Полезные ссылки

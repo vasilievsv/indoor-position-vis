@@ -33,7 +33,15 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         if _key not in self.station_coords:
             self.station_coords[_key] = WidgetStation( source='assets/icon_1.png', pos=self.pos)
             self.add_widget( self.station_coords.get(_key) )
- 
+
+        _l = len(self.station_coords)
+        if _l == 1:
+            self.station_coords[_key].pos = (0,0)
+        if _l == 2:
+            self.station_coords[_key].pos = (0,100)
+        if _l == 3:
+            self.station_coords[_key].pos = (100,0)
+
     @mainthread
     def on_ble_update_event(self, *args):
         _station        = args[1][0]
@@ -53,6 +61,7 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 
                 # CALCULATE POSITION COORDINATES
                 coords = self._ble_get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
+
                 if coords != None:
                    self.beacon_coords.get(key).pos = coords
                 else:
@@ -82,12 +91,11 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             [ st.get(_beacons[2]).pos[0],  st.get(_beacons[2]).pos[1],  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
         ]
 
-        print(_input)
-        _output = self.trilateration(_input)
+        _output = self.Trilat(_input)
         
         _coord = (
-            int(math.floor(2.3)),
-            int(math.floor(2.3))
+            int(math.floor( _output[0] )),
+            int(math.floor( _output[1] ))
         )
 
         return _coord
@@ -125,3 +133,34 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         x = (C*E - F*B) / (E*A - B*D)
         y = (C*D - A*F) / (B*D - A*E)
         return (x,y)
+
+    def Trilat(self, input):
+        
+        A = -24.514
+        N = -15.41
+
+        #rxA coordinates (0,0)
+        Xa = input[0][0] 
+        Ya = input[0][1]
+
+        #rxB coordinates (0,3)
+        Xb = input[1][0]
+        Yb = input[1][1]
+
+        #rxC coordinates (4,3)
+        Xc = input[2][0]
+        Yc = input[2][1]
+
+        dist_A = input[0][2]
+        dist_B = input[1][2]
+        dist_C = input[2][2]
+        
+        Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
+        Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
+
+        y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
+        x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
+        
+        _tuple = (x,y) 
+    
+        return _tuple
