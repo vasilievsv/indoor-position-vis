@@ -1,18 +1,15 @@
-from kivy.uix.label import Label
 from kivy.uix.image import Image
-from kivy.uix.widget import Widget
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import DragBehavior
-from kivy.uix.floatlayout import FloatLayout 
 
-class DashboardIcon(DragBehavior, Image):
+
+class WidgetStation(DragBehavior, Image):
 
     def __init__(self, **kwargs):
-        super(DashboardIcon, self).__init__(**kwargs)
+        super(WidgetStation, self).__init__(**kwargs)
         self.drag_timeout   = 10000000
         self.drag_distance  = 0
         self.drag_rectangle = [self.x, self.y, self.width, self.height]
-        self.size       = (48, 48)
+        self.size       = (24, 24)
         self.size_hint  = (None, None)
 
     def on_pos(self, *args):

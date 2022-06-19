@@ -33,7 +33,7 @@ class RootWidget(BoxLayout,EventDispatcher):
         super(RootWidget, self).__init__(**kwargs)
         # Наши события
         self.register_event_type('on_ble_update_event')
-        self.register_event_type('on_ble_station_update') 
+        self.register_event_type('on_ble_new_station') 
 
    
     def cmd_connect(self):
@@ -50,8 +50,8 @@ class RootWidget(BoxLayout,EventDispatcher):
             if hasattr(self.ids[child_id], "on_ble_update_event"):
                 self.bind(on_ble_update_event=self.ids[child_id].on_ble_update_event)
 
-            if hasattr(self.ids[child_id], "on_ble_station_update"):
-                self.bind(on_ble_station_update=self.ids[child_id].on_ble_station_update)
+            if hasattr(self.ids[child_id], "on_ble_new_station"):
+                self.bind(on_ble_new_station=self.ids[child_id].on_ble_new_station)
         pass
 
     def thread_mqtt_loop(self):
@@ -80,7 +80,7 @@ class RootWidget(BoxLayout,EventDispatcher):
         pass
 
     @mainthread
-    def on_ble_station_update(self, *args):
+    def on_ble_new_station(self, *args):
         txt_mac = args[0]
         self.ids['id_station_enums'].add_widget( Label(size_hint_y=None, height=30, text=txt_mac) )
         pass
@@ -118,7 +118,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'x':0,# Math.floor((Math.random() * 500) + 1)
                     'y':0 # Math.floor((Math.random() * 300) + 1)
                 }
-                self.dispatch('on_ble_station_update', station, self.stations[station])
+                self.dispatch('on_ble_new_station', station, self.stations[station])
             pass
 
             # 

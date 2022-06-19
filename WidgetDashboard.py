@@ -1,3 +1,5 @@
+import math
+from kivy.clock import Clock, mainthread
 from kivy.event import EventDispatcher
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -5,8 +7,9 @@ from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.floatlayout import FloatLayout 
-from kivy.clock import Clock, mainthread
-import math
+
+from WidgetStation import WidgetStation
+
 
 class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 
@@ -20,12 +23,14 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
 #
 # Event Handler
 #
-    def on_ble_station_update(self, *args):
+    @mainthread
+    def on_ble_new_station(self, *args):
         _obj = args[1]
         _key = args[0]
-        
-        if _obj not in self.station_coord:
+
+        if _obj not in self.station_coords:
             self.station_coords[_key] = _obj
+            self.add_widget( WidgetStation( source='assets/icon_1.png', pos=self.pos) ) 
 
     def on_ble_update_event(self, *args):
         #print("WidgetDashboard.on_ble_update_event");

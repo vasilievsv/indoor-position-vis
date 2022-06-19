@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.config import Config
 
 import WidgetRoot
-import WidgetDashboardIcon
+import WidgetStation
 import WidgetDashboard
 
 Config.set('graphics', 'resizable', '0')
