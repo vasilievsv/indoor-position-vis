@@ -27,12 +27,11 @@ class WidgetStation(DragBehavior, Image):
 # Drag & Drop
 #
     #def on_touch_down(self, touch):
-    #    return True
     #    if self.collide_point(*touch.pos):
     #        if touch.button == "right":
-    #            print('Right mouse clicked on ')
+    #            pass
     #        elif touch.button == "left":
-    #            print('Left mouse clicked on ')
+    #            print("on_touch_down")
     #        else:
     #            print(self.id)
-    #    print("on_touch_down")
+    

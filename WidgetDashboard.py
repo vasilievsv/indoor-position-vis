@@ -29,9 +29,10 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _key = args[0]
 
         if _obj not in self.station_coords:
-            self.station_coords[_key] = _obj
-            self.add_widget( WidgetStation( source='assets/icon_1.png', pos=self.pos) ) 
-
+            self.station_coords[_key] = WidgetStation( source='assets/icon_1.png', pos=self.pos)
+            self.add_widget( self.station_coords.get(_key) )
+    
+    @mainthread
     def on_ble_update_event(self, *args):
         #print("WidgetDashboard.on_ble_update_event");
         
@@ -41,16 +42,27 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         _widthMeters    = 1.85
 
         for key in _beacons:
+            # CALCULATE POSITION COORDINATES
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 print(key+" :" + str(_beacons[key]) )
-                #print("CALCULATE POSITION COORDINATES")
+                
+                if key not in self.beacon_coords:
+                    tmp =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
+                    self.beacon_coords[key] = tmp
+                    self.add_widget( tmp )
+                    pass
+
                 coords = self._ble_get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
                 if coords != None:
-                    self.beacon_coords[key] = coords;
+                    self.beacon_coords.get(key).pos.x = coords['x'];
+                    self.beacon_coords.get(key).pos.y = coords['y'];
                 else:
                     print("Failed to locate:"+key+str(_beacons[key]));
             pass
         pass
+
+        for i in self.station_coords:
+            print(self.station_coords.get(i).pos)
 
 #
 # Drag & Drop

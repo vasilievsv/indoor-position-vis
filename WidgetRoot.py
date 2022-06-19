@@ -109,7 +109,7 @@ class RootWidget(BoxLayout,EventDispatcher):
             mac     = json_obj['e'][i]['m'];    # Вытаскиваем MAC адрес
             station = json_obj['st'];
             
-            # Игнорим известные станции
+            # Обработка станций
             if station in self.stations:
                 pass
             else:
@@ -121,7 +121,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                 self.dispatch('on_ble_new_station', station, self.stations[station])
             pass
 
-            # 
+            # Обработка маяков
             if mac in self.stations:
                 # Dont measure stations rssi
                 # with other stations.
@@ -130,7 +130,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if {mac, station} <= self.beacons.keys():
                    del (self.beacons[mac][station])
                 
-                # Если нет в списке
+                # Если ключа нет в списке, создаем
                 if mac not in self.beacons :
                     self.beacons[mac] = {}
                 
@@ -138,7 +138,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'rssi':  json_obj['e'][i]['r'],
                     'timestamp': datetime.now().timestamp()
                 }
-            pass
+        pass
         
         # данные готовы
         _tuple = (self.stations, self.beacons)
