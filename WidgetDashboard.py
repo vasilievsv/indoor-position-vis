@@ -13,7 +13,7 @@ from kivy.uix.floatlayout import FloatLayout
 from WidgetStation import WidgetStation
 
 
-class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
+class WidgetDashboard(FloatLayout,EventDispatcher):
 
     def __init__(self,**kwargs):
         super(WidgetDashboard, self).__init__(**kwargs)
@@ -34,6 +34,7 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             self.station_coords[_key] = WidgetStation( source='assets/icon_1.png', pos=self.pos)
             self.add_widget( self.station_coords.get(_key) )
 
+        # расстановка станций по углам
         _l = len(self.station_coords)
         if _l == 1:
             self.station_coords[_key].pos = (0,0)
@@ -53,14 +54,14 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 #print(key+" :" + str(_beacons[key]) )
                 
-                # Иконки 
+                # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
                     self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
                     self.add_widget( self.beacon_coords.get(key) )
                     pass
 
                 # CALCULATE POSITION COORDINATES
-                coords = self._ble_get_coord( _beacons[key], _station, ( 400 / _widthMeters) )
+                coords = self._ble_get_coord( _beacons[key], _station, ( 200 / _widthMeters) )
 
                 if coords != None:
                    self.beacon_coords.get(key).pos = coords
@@ -116,15 +117,15 @@ class WidgetDashboard(DragBehavior,FloatLayout,EventDispatcher):
         A = -24.514
         N = -15.41
 
-        #rxA coordinates (0,0)
+        # Координаиты 1 станции
         Xa = input[0][0] 
         Ya = input[0][1]
 
-        #rxB coordinates (0,3)
+        # Координаиты 2 станции
         Xb = input[1][0]
         Yb = input[1][1]
 
-        #rxC coordinates (4,3)
+        # Координаиты 3 станции
         Xc = input[2][0]
         Yc = input[2][1]
 
