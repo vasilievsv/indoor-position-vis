@@ -37,7 +37,7 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         # расстановка станций по углам
         _l = len(self.station_coords)
         if _l == 1:
-            self.station_coords[_key].pos = (0,0)
+            self.station_coords[_key].pos = (100,100)
         if _l == 2:
             self.station_coords[_key].pos = (0,100)
         if _l == 3:
@@ -52,8 +52,13 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 
         for key in _beacons:
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
-                #print(key+" :" + str(_beacons[key]) )
                 
+                # Только наш маяк
+                if key != "9c:9c:1f:10:22:8a":
+                    continue
+
+                print(key+" :" + str(_beacons[key]) )
+
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
                     self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
@@ -113,32 +118,40 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         return _d*px_meter
 
     def Trilat(self, input):
-        
-        A = -24.514
-        N = -15.41
+       # _tuple = (0,0)
+        try:
+            A = -24.514
+            N = -15.41
 
-        # Координаиты 1 станции
-        Xa = input[0][0] 
-        Ya = input[0][1]
+            # Координаиты 1 станции
+            Xa = input[0][0] 
+            Ya = input[0][1]
 
-        # Координаиты 2 станции
-        Xb = input[1][0]
-        Yb = input[1][1]
+            # Координаиты 2 станции
+            Xb = input[1][0]
+            Yb = input[1][1]
 
-        # Координаиты 3 станции
-        Xc = input[2][0]
-        Yc = input[2][1]
+            # Координаиты 3 станции
+            Xc = input[2][0]
+            Yc = input[2][1]
 
-        dist_A = input[0][2]
-        dist_B = input[1][2]
-        dist_C = input[2][2]
-        
-        Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
-        Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
+            dist_A = input[0][2]
+            dist_B = input[1][2]
+            dist_C = input[2][2]
+            
+            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
+            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
 
-        y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
-        x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
-        
-        _tuple = (x,y) 
+            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
+            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
+
+            _tuple = (x,y)
+        except:
+            _tuple = (0,0)
+            print("divide error") 
+            print("dist_A"+str(int(dist_A)))
+            print("dist_B"+str(int(dist_B)))
+            print("dist_C"+str(int(dist_C)))
+            return (0,0)
     
         return _tuple
