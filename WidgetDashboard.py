@@ -53,11 +53,12 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         for key in _beacons:
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 
-                # Только наш маяк
-                if key != "9c:9c:1f:10:22:8a":
-                    continue
-
                 print(key+" :" + str(_beacons[key]) )
+
+                ### Если не наша метка пропускаем
+                ##if key != "9c:9c:1f:10:22:8a":
+                ##    continue
+
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
