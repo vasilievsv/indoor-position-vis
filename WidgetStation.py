@@ -1,8 +1,10 @@
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 from kivy.uix.behaviors import DragBehavior
 
+class WidgetStation (DragBehavior,Image):
 
-class WidgetStation(DragBehavior, Image):
+    station_uid = '?'
 
     def __init__(self, **kwargs):
         super(WidgetStation, self).__init__(**kwargs)
@@ -11,6 +13,7 @@ class WidgetStation(DragBehavior, Image):
         self.drag_rectangle = [self.x, self.y, self.width, self.height]
         self.size       = (24, 24)
         self.size_hint  = (None, None)
+
 
     def on_pos(self, *args):
         self.drag_rectangle = [self.x, self.y, self.width, self.height]

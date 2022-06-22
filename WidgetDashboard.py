@@ -36,11 +36,12 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 
         # расстановка станций по углам
         _l = len(self.station_coords)
-        if _l == 1:
+        print(_key)
+        if "CC" in  _key:
             self.station_coords[_key].pos = (100,100)
-        if _l == 2:
+        if "88" in  _key:
             self.station_coords[_key].pos = (0,100)
-        if _l == 3:
+        if "4C" in  _key:
             self.station_coords[_key].pos = (100,0)
 
     @mainthread
