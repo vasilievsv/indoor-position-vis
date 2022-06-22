@@ -54,10 +54,10 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 
                 print(key+" :" + str(_beacons[key]) )
-
+                
                 ### Если не наша метка пропускаем
-                ##if key != "9c:9c:1f:10:22:8a":
-                ##    continue
+                #if key != "98:b8:bc:15:aa:e2":
+                    ##continue
 
 
                 # Добавляем картинку если новый объект
