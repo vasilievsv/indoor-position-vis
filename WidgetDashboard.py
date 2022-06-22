@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from math import exp 
 
 from kivy.clock import Clock, mainthread
 from kivy.event import EventDispatcher
@@ -22,6 +23,14 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 
     beacon_coords    = {}
     station_coords   = {}
+
+    _widthMeters    = 1.85
+    _screenw=100
+    _power = -69
+
+    _A = -90
+    _N = -67.1
+
 #
 # Event Handler
 #
@@ -40,35 +49,35 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         if "CC" in  _key:
             self.station_coords[_key].pos = (100,100)
         if "88" in  _key:
-            self.station_coords[_key].pos = (0,100)
+            self.station_coords[_key].pos = (1,100)
         if "4C" in  _key:
-            self.station_coords[_key].pos = (100,0)
+            self.station_coords[_key].pos = (100,1)
 
     @mainthread
     def on_ble_update_event(self, *args):
         _station        = args[1][0]
         _beacons        = args[1][1]
 
-        _widthMeters    = 1.85
+
 
         for key in _beacons:
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 
-                print(key+" :" + str(_beacons[key]) )
                 
                 ### Если не наша метка пропускаем
-                #if key != "98:b8:bc:15:aa:e2":
-                    ##continue
-
+                if key != "9c:9c:1f:10:1b:46":
+                    continue
+                
+                print(key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
-                    self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos)
+                    self.beacon_coords[key] =  WidgetStation( source='assets/icon_2.png', pos=self.pos, size=(10,10))
                     self.add_widget( self.beacon_coords.get(key) )
                     pass
 
                 # CALCULATE POSITION COORDINATES
-                coords = self._ble_get_coord( _beacons[key], _station, ( 200 / _widthMeters) )
+                coords = self.FindPosition( _beacons[key], _station, (self._screenw /self._widthMeters) )
 
                 if coords != None:
                    self.beacon_coords.get(key).pos = coords
@@ -88,15 +97,28 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 #
 # Трилатерация
 #
-    def _ble_get_coord(self, beacon, stations, px_meter):
+    def FindPosition(self, beacon, stations, px_meter):
 
         _beacons =  sorted (beacon.keys());
-        st = self.station_coords
+        pt = self.station_coords
+        
+        # Станция 1
+        node_1_x = pt[_beacons[0]].pos[0]
+        node_1_y = pt[_beacons[0]].pos[1] 
+        node_1_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter ) 
+        # Станция 2
+        node_2_x = pt[_beacons[1]].pos[0]
+        node_2_y = pt[_beacons[1]].pos[1] 
+        node_2_dst = self.CalculateDistance( beacon[_beacons[1]]['rssi'], px_meter ) 
+        # Станция 3
+        node_3_x = pt[_beacons[2]].pos[0]
+        node_3_y = pt[_beacons[2]].pos[1] 
+        node_3_dst = self.CalculateDistance( beacon[_beacons[2]]['rssi'], px_meter ) 
 
         _input =[
-            [ st.get(_beacons[0]).pos[0],  st.get(_beacons[0]).pos[1],  self._ble_calculate_distance( beacon[_beacons[0]]['rssi'], px_meter )],
-            [ st.get(_beacons[1]).pos[0],  st.get(_beacons[1]).pos[1],  self._ble_calculate_distance( beacon[_beacons[1]]['rssi'], px_meter )],
-            [ st.get(_beacons[2]).pos[0],  st.get(_beacons[2]).pos[1],  self._ble_calculate_distance( beacon[_beacons[2]]['rssi'], px_meter )]
+            [ node_1_x, node_1_y, node_1_dst],
+            [ node_2_x, node_2_y, node_2_dst],
+            [ node_3_x, node_2_y, node_3_dst]
         ]
 
         _output = self.Trilat(_input)
@@ -108,23 +130,21 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 
         return _coord
     
-    def _ble_calculate_distance(self, rssi, px_meter):
-        # RSSI = TxPower - 10 * n * lg(d)
-        # n = 2...4
-        # d = 10^(TxPower - RSSI) / (10 * n))
-
-        _P = -69 # @TODO This value should come from MQTT message
-        _n = 3
-        _d = math.pow(10, ((_P-int(rssi)) / (10*_n)) ) # (n ranges from 2 to 4)
+    def CalculateDistance(self, rssi, px_meter):
         
+    # Вариант 1
+        #A = -47.370
+        #N = -67.1
+        #return exp((int(rssi)-A)/N)
+
+    # Вариант 2
+        _P = -69 # @TODO This value should come from MQTT message
+        _n = 4.7
+        _d = math.pow(10, ((int(rssi)) / (10*_n)) ) # (n ranges from 2 to 4)
         return _d*px_meter
 
     def Trilat(self, input):
-       # _tuple = (0,0)
         try:
-            A = -24.514
-            N = -15.41
-
             # Координаиты 1 станции
             Xa = input[0][0] 
             Ya = input[0][1]
@@ -133,27 +153,29 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
             Xb = input[1][0]
             Yb = input[1][1]
 
+
             # Координаиты 3 станции
             Xc = input[2][0]
             Yc = input[2][1]
+
 
             dist_A = input[0][2]
             dist_B = input[1][2]
             dist_C = input[2][2]
             
+            print(dist_A)
+            print(dist_B)
+            print(dist_C)   
+
             Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
             Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
 
             y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
             x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
 
-            _tuple = (x,y)
+            return (x,y)
         except:
-            _tuple = (0,0)
             print("divide error") 
-            print("dist_A"+str(int(dist_A)))
-            print("dist_B"+str(int(dist_B)))
-            print("dist_C"+str(int(dist_C)))
-            return (0,0)
+         
     
-        return _tuple
+        return (0,0)

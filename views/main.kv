@@ -34,11 +34,11 @@ RootWidget:
     # Контейнер для кнопок
     #
         BoxLayout:
-            orientation :'horizontal'
+            orientation :'vertical'
             padding     : 1
             spacing     : 1
             height      : root.height
-            size_hint   : 1, 0.1
+            size_hint   : 1, 1
 
             canvas.before:
                 Color:
@@ -54,7 +54,30 @@ RootWidget:
                 size_hint   : .5, 1
                 text        : 'connect'
                 on_press    : root.cmd_connect()
-
+            
+            Slider:
+                orientation:'horizontal'
+                min:-100
+                max:-10
+                value:67
+                size        : 96,32
+                size_hint   : 1, 1
+                on_value:id_dashboard._A = int(self.value )
+            Slider:
+                orientation:'horizontal'
+                min:1
+                max:900
+                size        : 96,32
+                size_hint   : (1,None)
+                on_value:id_dashboard._screenw = int(self.value )
+            Slider:
+                orientation:'horizontal'
+                min:1
+                max:50
+                value:2
+                size        : 96,32
+                size_hint   : (1,None)
+                on_value:id_dashboard._widthMeters = int(self.value )
     #
     # Список Станций
     #
