@@ -2,13 +2,18 @@
 
 RootWidget:
     orientation:'horizontal'
-
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.25
+        Rectangle:
+            size: self.size
+            pos: self.pos
 #
 # Dashboard
 #
     BoxLayout:
         orientation:'horizontal'
-        padding: 10
+        padding: 5
         spacing: 1
         
         WidgetDashboard:
@@ -24,13 +29,19 @@ RootWidget:
 #
     BoxLayout:
         orientation :'vertical'
-        padding     : 10
-        spacing     : 10
+        padding     : 1
+        spacing     : 1
         height      : root.height
         size_hint   : (0.30, 1)
     #
     # Контейнер для кнопок
     #
+        Label:
+            text        :'Параметры'
+            font_size   : 12
+            size_hint   : (None,0.1)
+            color       : 0.5, 0.5, 0.5, 1
+
         BoxLayout:
             orientation :'vertical'
             padding     : 1
@@ -45,36 +56,40 @@ RootWidget:
                     size: self.size
                     pos : self.pos
             Label:
-                text     : 'font1'
+                text     : 'A'
                 font_size: 10
             Slider:
-                min     :10
-                max     :90
-                value   :67
+                min         : 10
+                max         : 90
+                value       : 67
                 size        : 96,32
                 size_hint   : (1, None)
                 on_value    : id_dashboard._A = -int(self.value)
             Label:
-                text     : 'font1'
+                text     : 'N'
                 font_size: 10
             Slider:
-                min     :10
-                max     :90
+                min         :10
+                max         :90
                 size        : 96,32
                 size_hint   : (1,None)
                 on_value    : id_dashboard._N = -int(self.value )
             Label:
-                text     : 'font1'
+                text     : 'Scale'
                 font_size: 10
             Slider:
-                min     :10
-                max     :800
+                min         :10
+                max         :800
                 size        : 96,32
                 size_hint   : (1,None)
                 on_value    : id_dashboard._screenw = int(self.value)
     #
     # Список Станций
     #
+        Label:
+            text     : 'Список Станций'
+            font_size: 12
+            size_hint: (None,0.1)
         BoxLayout:
             id          : id_station_enums
             orientation :'vertical'
@@ -84,21 +99,10 @@ RootWidget:
                 Rectangle:
                     size: self.size
                     pos: self.pos
-        BoxLayout:
-            orientation :'vertical'
-            height      : root.height
+        Button:
+            id          : BTN_CONNECT_TO_BROKER
+            font_size   : 10
+            size        : (96,16)
             size_hint   : (1, 0.25)
-
-            canvas.before:
-                Color:
-                    rgba: 1, 0, 0, 0.25
-                Rectangle:
-                    size: self.size
-                    pos : self.pos
-            Button:
-                id          : BTN_CONNECT_TO_BROKER
-                font_size   : 10
-                size        : (96,16)
-                size_hint   : (1, 1)
-                text        : 'connect'
-                on_press    : root.cmd_connect()
+            text        : 'connect'
+            on_press    : root.cmd_connect()

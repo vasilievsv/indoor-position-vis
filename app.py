@@ -7,15 +7,15 @@ import WidgetStation
 import WidgetDashboard
 
 Config.set('graphics', 'resizable', '0')
-Config.set('graphics', 'width', '800')
-Config.set('graphics', 'height', '400')
+Config.set('graphics', 'width', '840')
+Config.set('graphics', 'height', '420')
 
 class Application(App):
 
     def on_stop(self):
-        # The Kivy event loop is about to stop, set a stop signal;
-        # otherwise the app window will close, but the Python process will
-        # keep running until all secondary threads exit.
+        #Выход из приложения и установка флага выхода из потока для дочерних потоков
+        #в противном случае окно приложения закроется, но процесс Python будет
+        #продолжайте работать до тех пор, пока все вторичные потоки не остановятся.
         self.root.stop.set()
 
     def build(self):
