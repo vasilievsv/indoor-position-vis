@@ -63,12 +63,11 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         for key in _beacons:
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
                 
-                
-                ### Если не наша метка пропускаем
+                # Если не наша метка пропускаем
                 if key != "9c:9c:1f:10:1b:46":
                     continue
                 
-                print(key+" :" + str(_beacons[key]) )
+                #print(key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
@@ -77,7 +76,7 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
                     pass
 
                 # CALCULATE POSITION COORDINATES
-                coords = self.FindPosition( _beacons[key], _station, (self._screenw /self._widthMeters) )
+                coords = self.FindPosition( _beacons[key], _station, float(self._screenw / 1.85) )
 
                 if coords != None:
                    self.beacon_coords.get(key).pos = coords
@@ -115,6 +114,7 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         node_3_y = pt[_beacons[2]].pos[1] 
         node_3_dst = self.CalculateDistance( beacon[_beacons[2]]['rssi'], px_meter ) 
 
+    
         _input =[
             [ node_1_x, node_1_y, node_1_dst],
             [ node_2_x, node_2_y, node_2_dst],
@@ -133,15 +133,16 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
     def CalculateDistance(self, rssi, px_meter):
         
     # Вариант 1
-        #A = -47.370
-        #N = -67.1
-        #return exp((int(rssi)-A)/N)
+        #расчет через опорную точку
+        A = self._A#-47.370
+        N = self._N#67.1
+        return exp((int(rssi)-A)/N)*px_meter
 
     # Вариант 2
-        _P = -69 # @TODO This value should come from MQTT message
-        _n = 4.7
-        _d = math.pow(10, ((int(rssi)) / (10*_n)) ) # (n ranges from 2 to 4)
-        return _d*px_meter
+        #_P = self._A #-69 # @TODO This value should come from MQTT message
+        #_n = 4.7
+        #_d = math.pow(10, ((int(rssi)-_P) / (10*_n)) ) # (n ranges from 2 to 4)
+        #return _d*px_meter
 
     def Trilat(self, input):
         try:
@@ -163,9 +164,8 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
             dist_B = input[1][2]
             dist_C = input[2][2]
             
-            print(dist_A)
-            print(dist_B)
-            print(dist_C)   
+            print(dist_A,dist_B,dist_C)
+            print(self._A,self._N, self._widthMeters)
 
             Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
             Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
