@@ -1,3 +1,11 @@
+"""
+    -----------------------------------------------------------
+    WidgetDashboard
+
+
+
+    -----------------------------------------------------------
+"""
 import math
 import numpy as np
 from math import exp 
@@ -14,22 +22,21 @@ from kivy.uix.floatlayout import FloatLayout
 from WidgetStation import WidgetStation
 
 
-class WidgetDashboard(FloatLayout,EventDispatcher):
+class WidgetDashboard(FloatLayout):
 
     def __init__(self,**kwargs):
         super(WidgetDashboard, self).__init__(**kwargs)
         self.size_hint = (1,1)
         self.orientation = "vertical"
 
-    beacon_coords    = {}
-    station_coords   = {}
+    beacon_coords   = {}
+    station_coords  = {}
 
     _widthMeters    = 1.85
-    _screenw=100
-    _power = -69
-
-    _A = -90
-    _N = -67.1
+    _screenw        = 100
+    _power          = -69
+    _A              = -90
+    _N              = -67.1
 
 #
 # Event Handler
@@ -57,8 +64,6 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
     def on_ble_update_event(self, *args):
         _station        = args[1][0]
         _beacons        = args[1][1]
-
-
 
         for key in _beacons:
             if len(_beacons[key])  >= 3 and len(_station) >= 3:
@@ -98,20 +103,22 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
 #
     def FindPosition(self, beacon, stations, px_meter):
 
-        _beacons =  sorted (beacon.keys());
-        pt = self.station_coords
+        _beacons =  sorted( beacon.keys() )
+        _station = self.station_coords
         
         # Станция 1
-        node_1_x = pt[_beacons[0]].pos[0]
-        node_1_y = pt[_beacons[0]].pos[1] 
+        node_1_x = _station[_beacons[0]].pos[0]
+        node_1_y = _station[_beacons[0]].pos[1] 
         node_1_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter ) 
+        
         # Станция 2
-        node_2_x = pt[_beacons[1]].pos[0]
-        node_2_y = pt[_beacons[1]].pos[1] 
+        node_2_x = _station[_beacons[1]].pos[0]
+        node_2_y = _station[_beacons[1]].pos[1] 
         node_2_dst = self.CalculateDistance( beacon[_beacons[1]]['rssi'], px_meter ) 
+        
         # Станция 3
-        node_3_x = pt[_beacons[2]].pos[0]
-        node_3_y = pt[_beacons[2]].pos[1] 
+        node_3_x = _station[_beacons[2]].pos[0]
+        node_3_y = _station[_beacons[2]].pos[1] 
         node_3_dst = self.CalculateDistance( beacon[_beacons[2]]['rssi'], px_meter ) 
 
     
@@ -129,9 +136,9 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         )
 
         return _coord
-    
+
     def CalculateDistance(self, rssi, px_meter):
-        
+    
     # Вариант 1
         #расчет через опорную точку
         A = self._A#-47.370
@@ -154,11 +161,9 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
             Xb = input[1][0]
             Yb = input[1][1]
 
-
             # Координаиты 3 станции
             Xc = input[2][0]
             Yc = input[2][1]
-
 
             dist_A = input[0][2]
             dist_B = input[1][2]
@@ -177,5 +182,5 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
         except:
             print("divide error") 
          
-    
+
         return (0,0)
