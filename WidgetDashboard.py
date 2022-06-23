@@ -135,7 +135,7 @@ class WidgetDashboard(FloatLayout,EventDispatcher):
     # Вариант 1
         #расчет через опорную точку
         A = self._A#-47.370
-        N = self._N#67.1
+        N = self._N#-67.1
         return exp((int(rssi)-A)/N)*px_meter
 
     # Вариант 2
