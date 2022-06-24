@@ -72,7 +72,7 @@ class WidgetDashboard(FloatLayout):
                 if key != "9c:9c:1f:10:1b:46":
                     continue
                 
-                #print(key+" :" + str(_beacons[key]) )
+                print(key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
@@ -148,7 +148,7 @@ class WidgetDashboard(FloatLayout):
     # Вариант 2
         _P = self._A #-69 # @TODO This value should come from MQTT message
         _n = 3
-        _d = math.pow(10, ((int(rssi)-_P) / (10*_n)) ) # (n ranges from 2 to 4)
+        _d = math.pow(10, ((_P-int(rssi)) / (10*_n)) ) # (n ranges from 2 to 4)
         return _d*px_meter
 
     def Trilat(self, input):

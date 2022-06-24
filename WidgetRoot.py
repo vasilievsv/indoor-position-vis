@@ -10,6 +10,7 @@ import sys
 import time
 import threading
 import math
+import numpy as np
 
 import json as json_parser
 import paho.mqtt.client as mqtt
@@ -123,8 +124,8 @@ class RootWidget(BoxLayout,EventDispatcher):
             else:
                 print("new_station:" + station )
                 self.stations[station] = {
-                    'x':0,# Math.floor((Math.random() * 500) + 1)
-                    'y':0 # Math.floor((Math.random() * 300) + 1)
+                    'x':0,
+                    'y':0
                 }
                 self.dispatch('on_ble_new_station', station, self.stations[station])
             pass
@@ -153,3 +154,57 @@ class RootWidget(BoxLayout,EventDispatcher):
         self.dispatch('on_ble_update_event', _tuple)
 
         pass
+
+    # https://github.com/philipiv/rssi-filtering-kalman
+    def kalman_block(self, x, P, s, A, H, Q, R):
+
+        """
+        Prediction and update in Kalman filter
+        input:
+            - signal: signal to be filtered
+            - x: previous mean state
+            - P: previous variance state
+            - s: current observation
+            - A, H, Q, R: kalman filter parameters
+        output:
+            - x: mean state prediction
+            - P: variance state prediction
+        """
+
+        # check laaraiedh2209 for further understand these equations
+
+        x_mean = A * x + np.random.normal(0, Q, 1)
+        P_mean = A * P * A + Q
+
+        K = P_mean * H * (1 / (H * P_mean * H + R))
+        x = x_mean + K * (s - H * x_mean)
+        P = (1 - K * H) * P_mean
+
+        return x, P
+        
+    # https://github.com/philipiv/rssi-filtering-kalman
+    def kalman_filter(self, signal, A, H, Q, R):
+
+        """
+        Implementation of Kalman filter.
+        Takes a signal and filter parameters and returns the filtered signal.
+        input:
+            - signal: signal to be filtered
+            - A, H, Q, R: kalman filter parameters
+        output:
+            - filtered signal
+        """
+
+        predicted_signal = []
+
+        x = signal[0]                                 # takes first value as first filter prediction
+        P = 0                                         # set first covariance state value to zero
+
+        predicted_signal.append(x)
+        for j, s in enumerate(signal[1:]):            # iterates on the entire signal, except the first element
+
+            x, P = self.kalman_block( x, P, s, A, H, Q, R)  # calculates next state prediction
+
+            predicted_signal.append(x)                # update predicted signal with this step calculation
+
+        return predicted_signal
