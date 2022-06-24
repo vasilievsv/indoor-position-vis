@@ -180,11 +180,11 @@ class RootWidget(BoxLayout,EventDispatcher):
                 # Kalman filter by station
                 #
                 if station not in self.blemacid:
-                    self.blemacid[station]= RingBuffer(32)
+                    self.blemacid[station]= RingBuffer(3)
                 self.blemacid[station].append( int(json_obj['e'][i]['r']))
                 
                 foo = self.kalman_filter(self.blemacid[station].get(), A=1, H=1, Q=1, R=1)
-                print(station,"origin:",int(json_obj['e'][i]['r']), "filtered:",foo)
+                #print(station,"origin:",int(json_obj['e'][i]['r']), "filtered:",foo)
 
                 self.beacons[mac][station] = {
                     'rssi':  foo,

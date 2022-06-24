@@ -85,6 +85,7 @@ class WidgetDashboard(FloatLayout):
 
                 # CALCULATE POSITION COORDINATES
                 coords = self.FindPosition( _beacons[key], _station, float(self._screenw / 1.85) )
+                #print(coords)
 
                 if coords != None:
                    self.beacon_coords.get(key).pos = coords
@@ -143,16 +144,18 @@ class WidgetDashboard(FloatLayout):
     def CalculateDistance(self, rssi, px_meter):
     
     # Вариант 1
-        #расчет через опорную точку
-        A = self._A #-47.370
-        N = self._N #-67.1
-        return exp((A-int(rssi))/N) * px_meter
+        ##расчет через опорную точку
+        #A = self._A #-47.370
+        #N = self._N #-67.1
+        #return exp((A-int(rssi))/N)
 
     # Вариант 2
-        #_P = self._A #-69 # @TODO This value should come from MQTT message
-        #_n = 3
-        #_d = math.pow(10, ((int(rssi)-_P) / (10*_n)) ) # (n ranges from 2 to 4)
-        #return _d*px_meter
+    # https://medium.com/beingcoders/convert-rssi-value-of-the-ble-bluetooth-low-energy-beacons-to-meters-63259f307283
+        _P = self._A    # beacon broadcast power in dBm at 1 m (Tx Power) 
+        _S = int(rssi)  # measured signal value (RSSI) in dBm 
+        _n = 3          # environmental factor 
+        _d = math.pow(10, (_P-_S) / (10*_n))
+        return _d
 
     def Trilat(self, input):
         try:
