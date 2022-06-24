@@ -8,6 +8,7 @@
 """
 import math
 import numpy as np
+
 from math import exp 
 
 from kivy.clock import Clock, mainthread
@@ -31,6 +32,8 @@ class WidgetDashboard(FloatLayout):
 
     beacon_coords   = {}
     station_coords  = {}
+
+
 
     _widthMeters    = 1.85
     _screenw        = 100
@@ -108,7 +111,7 @@ class WidgetDashboard(FloatLayout):
         
         # Станция 1
         node_1_x = _station[_beacons[0]].pos[0]
-        node_1_y = _station[_beacons[0]].pos[1] 
+        node_1_y = _station[_beacons[0]].pos[1]
         node_1_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter ) 
         
         # Станция 2

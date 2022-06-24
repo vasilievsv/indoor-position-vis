@@ -7,7 +7,7 @@ python --version
 pip3 install kivy
 pip3 install paho-mqtt
 pip3 install lmfit
-```
+pip3 install filterpy```
 
 #### Описание метода 
 ```

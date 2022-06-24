@@ -12,6 +12,8 @@ import threading
 import math
 import numpy as np
 
+from filterpy.kalman import KalmanFilter 
+
 import json as json_parser
 import paho.mqtt.client as mqtt
 
@@ -37,6 +39,9 @@ class RootWidget(BoxLayout,EventDispatcher):
     stations        = {};  #
     sortedBeacons   = {}
     knownBeacons    = []
+
+
+    blemacid = {"9c:9c:1f:10:1b:46": KalmanFilter(1,1)}
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
@@ -95,9 +100,9 @@ class RootWidget(BoxLayout,EventDispatcher):
         pass
 
     def on_mqtt_connect(self, userdata, flags, rc, t1):
-        print("*")
-        print("* Connected with result code "+str(rc))
-        print("*")
+        print("**")
+        print("** Connected with result code "+str(rc))
+        print("**")
         self.client.subscribe('/beacons/office')
     
     #
@@ -139,12 +144,22 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if {mac, station} <= self.beacons.keys():
                    del (self.beacons[mac][station])
                 
-                # Если ключа нет в списке, создаем
+                # Если ключа нет в списке, 
+                # создаем новую запись
                 if mac not in self.beacons :
                     self.beacons[mac] = {}
                 
+                # Kalman filter by station
+                #
+                if station not in self.blemacid:
+                    self.blemacid[station]= []
+                self.blemacid[station].append( int(json_obj['e'][i]['r']))
+                
+                foo = self.kalman_filter(self.blemacid[station], A=1, H=1, Q=1, R=1)
+                print(station,"origin:",int(json_obj['e'][i]['r']), "filtered:",foo)
+
                 self.beacons[mac][station] = {
-                    'rssi':  json_obj['e'][i]['r'],
+                    'rssi':  foo,
                     'timestamp': datetime.now().timestamp()
                 }
         pass
@@ -207,4 +222,4 @@ class RootWidget(BoxLayout,EventDispatcher):
 
             predicted_signal.append(x)                # update predicted signal with this step calculation
 
-        return predicted_signal
+        return x
