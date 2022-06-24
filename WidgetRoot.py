@@ -11,6 +11,7 @@ import time
 import threading
 import math
 import numpy as np
+from collections import deque
 
 from filterpy.kalman import KalmanFilter 
 
@@ -28,6 +29,33 @@ from kivy.clock import Clock, mainthread
 from kivy.event import EventDispatcher
 
 from datetime import datetime
+
+class RingBuffer(deque):
+    """
+    inherits deque, pops the oldest data to make room
+    for the newest data when size is reached
+    """
+    def __init__(self, size):
+        deque.__init__(self)
+        self.size = size
+        
+    def full_append(self, item):
+        deque.append(self, item)
+        # full, pop the oldest item, left most item
+        self.popleft()
+        
+    def append(self, item):
+        deque.append(self, item)
+        # max size reached, append becomes full_append
+        if len(self) == self.size:
+            self.append = self.full_append
+    
+    def get(self):
+        """returns a list of size items (newest items)"""
+        return list(self)
+
+
+
 
 class RootWidget(BoxLayout,EventDispatcher):
 
@@ -152,10 +180,10 @@ class RootWidget(BoxLayout,EventDispatcher):
                 # Kalman filter by station
                 #
                 if station not in self.blemacid:
-                    self.blemacid[station]= []
+                    self.blemacid[station]= RingBuffer(20)
                 self.blemacid[station].append( int(json_obj['e'][i]['r']))
                 
-                foo = self.kalman_filter(self.blemacid[station], A=1, H=1, Q=1, R=1)
+                foo = self.kalman_filter(self.blemacid[station].get(), A=1, H=1, Q=1, R=1)
                 print(station,"origin:",int(json_obj['e'][i]['r']), "filtered:",foo)
 
                 self.beacons[mac][station] = {
