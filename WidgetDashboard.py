@@ -141,15 +141,15 @@ class WidgetDashboard(FloatLayout):
     
     # Вариант 1
         #расчет через опорную точку
-        A = self._A#-47.370
-        N = self._N#-67.1
-        return exp((int(rssi)-A)/N)*px_meter
+        #A = self._A #-47.370
+        #N = self._N #-67.1
+        #return exp((int(rssi)-A)/N) * px_meter
 
     # Вариант 2
-        #_P = self._A #-69 # @TODO This value should come from MQTT message
-        #_n = 4.7
-        #_d = math.pow(10, ((int(rssi)-_P) / (10*_n)) ) # (n ranges from 2 to 4)
-        #return _d*px_meter
+        _P = self._A #-69 # @TODO This value should come from MQTT message
+        _n = 3
+        _d = math.pow(10, ((int(rssi)-_P) / (10*_n)) ) # (n ranges from 2 to 4)
+        return _d*px_meter
 
     def Trilat(self, input):
         try:
@@ -169,8 +169,7 @@ class WidgetDashboard(FloatLayout):
             dist_B = input[1][2]
             dist_C = input[2][2]
             
-            print(dist_A,dist_B,dist_C)
-            print(self._A,self._N, self._widthMeters)
+            print("dist:",dist_A,dist_B,dist_C)
 
             Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2)  + (dist_B**2 - dist_C**2))/2
             Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2

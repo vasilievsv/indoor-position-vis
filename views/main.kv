@@ -7,7 +7,7 @@ RootWidget:
             rgba: 1, 1, 1, 0.25
         Rectangle:
             size: self.size
-            pos: self.pos
+            pos : self.pos
 #
 # Dashboard
 #
@@ -15,7 +15,6 @@ RootWidget:
         orientation:'horizontal'
         padding: 5
         spacing: 1
-        
         WidgetDashboard:
             id:id_dashboard
             canvas.before:
@@ -23,14 +22,14 @@ RootWidget:
                     rgba: 1, 1, 1, 0.25
                 Rectangle:
                     size: self.size
-                    pos: self.pos
+                    pos : self.pos
 #
 # Боковая панель
 #
     BoxLayout:
         orientation :'vertical'
-        padding     : 1
-        spacing     : 1
+        padding     : 4
+        spacing     : 2
         height      : root.height
         size_hint   : (0.30, 1)
     #
@@ -40,8 +39,7 @@ RootWidget:
             text        :'Параметры'
             font_size   : 12
             size_hint   : (None,0.1)
-            color       : 1, 1, 1, 1
-
+            
         BoxLayout:
             orientation :'vertical'
             padding     : 1
@@ -66,20 +64,20 @@ RootWidget:
                 size_hint   : (1, None)
                 on_value    : id_dashboard._A = -int(self.value)
             Label:
-                text     : 'N'
-                font_size: 10
+                text        : 'N'
+                font_size   : 10
             Slider:
-                min         :10
-                max         :90
+                min         : 10
+                max         : 90
                 size        : 96,32
                 size_hint   : (1,None)
                 on_value    : id_dashboard._N = -int(self.value )
             Label:
-                text     : 'Scale'
-                font_size: 10
+                text        : 'Scale'
+                font_size   : 10
             Slider:
-                min         :10
-                max         :800
+                min         : 1
+                max         : 800
                 size        : 96,32
                 size_hint   : (1,None)
                 on_value    : id_dashboard._screenw = int(self.value)
@@ -98,11 +96,11 @@ RootWidget:
                     rgba: 0, 1, 0, 0.25
                 Rectangle:
                     size: self.size
-                    pos: self.pos
+                    pos : self.pos
         Button:
             id          : BTN_CONNECT_TO_BROKER
-            font_size   : 10
+            font_size   : 12
             size        : (96,16)
             size_hint   : (1, 0.25)
-            text        : 'connect'
+            text        : 'Подключение'
             on_press    : root.cmd_connect()
