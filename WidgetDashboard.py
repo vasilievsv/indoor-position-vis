@@ -35,10 +35,10 @@ class WidgetDashboard(FloatLayout):
 
 
 
-    _widthMeters    = 46
-    _screenw        = 356
+    _widthMeters    = 41
+    _screenw        = 300
     _power          = -69
-    _A              = -51
+    _A              = -41
     _N              = 4
 
 #
@@ -76,7 +76,7 @@ class WidgetDashboard(FloatLayout):
 
         # Отладка
         #   значения RSSI до маячка с 3 станций
-                #print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
+                print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
@@ -117,10 +117,7 @@ class WidgetDashboard(FloatLayout):
         # Станция 3
         node_3_x = _station[_beacons[0]].pos[0]
         node_3_y = _station[_beacons[0]].pos[1] 
-        node_3_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter ) 
-
-        # Отладка
-        print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
+        node_3_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter )
 
         _input =[
             [ node_1_x, node_1_y, node_1_dst],
@@ -128,13 +125,15 @@ class WidgetDashboard(FloatLayout):
             [ node_3_x, node_2_y, node_3_dst]
         ]
 
+    # Отладка
+        #print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
+
         _output = self.Trilat(_input)
         
         _coord = (
-            int(math.floor( _output[0] )),
-            int(math.floor( _output[1] ))
+             _output[0],
+             _output[1] 
         )
-
 
         return _coord
 
@@ -151,19 +150,19 @@ class WidgetDashboard(FloatLayout):
 
     # Вариант 2
     # https://medium.com/beingcoders/convert-rssi-value-of-the-ble-bluetooth-low-energy-beacons-to-meters-63259f307283
-        _P = self._A   # beacon broadcast power in dBm at 1 m (Tx Power) 
-        _S = int(rssi)  # measured signal value (RSSI) in dBm 
-        _n = self._N          # environmental factor 
+        _P = self._A            # beacon broadcast power in dBm at 1 m (Tx Power) 
+        _S = int(rssi)          # measured signal value (RSSI) in dBm 
+        _n = self._N            # environmental factor 
         _d = math.pow(10, (_P-_S) / (10*_n))
-        #return _d *px_meter
+        return _d *px_meter
         
      # Вариант 3
-        ratio = rssi*1.0/self._A;
-
-        if ratio < 1.0 :
-            return  math.pow(10, (_P-_S) / (10*_n))*px_meter #math.pow(ratio,10);
-        else:
-            return ((0.89976)*math.pow(ratio,7.7095) + 0.111)*px_meter
+#        ratio = rssi*1.0/self._A;
+#
+#        if ratio < 1.0 :
+#            return  math.pow(ratio, (_P-_S) / (10*_n)) *px_meter #math.pow(ratio,10)
+#        else:
+#            return ((0.89976)*math.pow(ratio,7.7095) + 0.111)*px_meter
 
 
     def Trilat(self, input):
@@ -194,7 +193,6 @@ class WidgetDashboard(FloatLayout):
         except:
             print("Trilat: divid_error") 
          
-
         return (0,0)
 
 #
