@@ -69,10 +69,10 @@ RootWidget:
             Slider:
                 min         : 2
                 max         : 5
-                value       : 3
+                value       : 5
                 size        : 96,32
                 size_hint   : (1,None)
-                on_value    : id_dashboard._N = -int(self.value )
+                on_value    : id_dashboard._N = int(self.value )
             Label:
                 text        : 'Scale'
                 font_size   : 10

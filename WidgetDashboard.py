@@ -39,7 +39,7 @@ class WidgetDashboard(FloatLayout):
     _screenw        = 100
     _power          = -69
     _A              = -51
-    _N              = -67.1
+    _N              = 4
 
 #
 # Event Handler
@@ -75,7 +75,7 @@ class WidgetDashboard(FloatLayout):
                 if key != "9c:9c:1f:10:1b:46":
                     continue
         # Отладка
-                print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
+                #print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
@@ -188,7 +188,7 @@ class WidgetDashboard(FloatLayout):
             dist_C = (input[2][2])
             
     # Отладка
-            #print("trilat_dist:",dist_A,dist_B,dist_C, self._A, self._N)
+            print("trilat_dist:",dist_A,dist_B,dist_C, self._A, self._N)
 
             Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
             Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2

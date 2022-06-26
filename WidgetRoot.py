@@ -172,14 +172,15 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if {mac, station} <= self.beacons.keys():
                    del (self.beacons[mac][station])
                 
-                _rssi = int(json_obj['e'][i]['r'])
-
                 # Если ключа нет в списке, 
                 # создаем новую запись
                 if mac not in self.beacons :
                     self.beacons[mac] = {}
                 
-                # Use math  filter by station
+                _rssi = int(json_obj['e'][i]['r'])
+
+                ###
+                ## Use math  filter by station
                 #
                 if station not in self.blemacid:
                     self.blemacid[station]= RingBuffer(8)
