@@ -35,8 +35,8 @@ class WidgetDashboard(FloatLayout):
 
 
 
-    _widthMeters    = 1.85
-    _screenw        = 100
+    _widthMeters    = 46
+    _screenw        = 356
     _power          = -69
     _A              = -51
     _N              = 4
@@ -55,13 +55,12 @@ class WidgetDashboard(FloatLayout):
 
         # расстановка станций по углам
         _l = len(self.station_coords)
-        print(_key)
-        if "CC" in  _key:
-            self.station_coords[_key].pos = (1,100)
         if "88" in  _key:
-            self.station_coords[_key].pos = (100,100)
+            self.station_coords[_key].pos = (20,20)
+        if "CC" in  _key:
+            self.station_coords[_key].pos = (300,300)
         if "4C" in  _key:
-            self.station_coords[_key].pos = (100,1)
+            self.station_coords[_key].pos = (300,20)
 
     @mainthread
     def on_ble_update_event(self, *args):
@@ -74,7 +73,9 @@ class WidgetDashboard(FloatLayout):
                 # Если не наша метка пропускаем
                 if key != "9c:9c:1f:10:1b:46":
                     continue
+
         # Отладка
+        #   значения RSSI до маячка с 3 станций
                 #print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
@@ -94,13 +95,6 @@ class WidgetDashboard(FloatLayout):
             pass
         pass
 
-#
-# Drag & Drop
-#
-    def handle_drag_release(self, index, drag_widget):
-        print("handle_drag_release")
-        #self.add_widget(drag_widget, index)
-        pass
 
 #
 # Трилатерация
@@ -125,7 +119,9 @@ class WidgetDashboard(FloatLayout):
         node_3_y = _station[_beacons[0]].pos[1] 
         node_3_dst = self.CalculateDistance( beacon[_beacons[0]]['rssi'], px_meter ) 
 
-    
+        # Отладка
+        print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
+
         _input =[
             [ node_1_x, node_1_y, node_1_dst],
             [ node_2_x, node_2_y, node_2_dst],
@@ -139,6 +135,7 @@ class WidgetDashboard(FloatLayout):
             int(math.floor( _output[1] ))
         )
 
+
         return _coord
 
     #
@@ -150,7 +147,7 @@ class WidgetDashboard(FloatLayout):
         ###расчет через опорную точку
         #A = self._A #-47.370
         #N = self._N #-67.1
-        #return exp((A-int(rssi))/N) * px_meter
+        #return exp((A-int(rssi))/N) *px_meter
 
     # Вариант 2
     # https://medium.com/beingcoders/convert-rssi-value-of-the-ble-bluetooth-low-energy-beacons-to-meters-63259f307283
@@ -158,15 +155,15 @@ class WidgetDashboard(FloatLayout):
         _S = int(rssi)  # measured signal value (RSSI) in dBm 
         _n = self._N          # environmental factor 
         _d = math.pow(10, (_P-_S) / (10*_n))
-        return _d
+        #return _d *px_meter
         
      # Вариант 3
         ratio = rssi*1.0/self._A;
 
         if ratio < 1.0 :
-            return  math.pow(10, (_P-_S) / (10*_n)) #math.pow(ratio,10);
+            return  math.pow(10, (_P-_S) / (10*_n))*px_meter #math.pow(ratio,10);
         else:
-            return (0.89976)*math.pow(ratio,7.7095) + 0.111;
+            return ((0.89976)*math.pow(ratio,7.7095) + 0.111)*px_meter
 
 
     def Trilat(self, input):
@@ -187,9 +184,6 @@ class WidgetDashboard(FloatLayout):
             dist_B = (input[1][2])
             dist_C = (input[2][2])
             
-    # Отладка
-            print("trilat_dist:",dist_A,dist_B,dist_C, self._A, self._N)
-
             Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
             Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
 
@@ -202,3 +196,11 @@ class WidgetDashboard(FloatLayout):
          
 
         return (0,0)
+
+#
+# Drag & Drop
+#
+    def handle_drag_release(self, index, drag_widget):
+        print("handle_drag_release")
+        #self.add_widget(drag_widget, index)
+        pass

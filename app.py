@@ -8,7 +8,7 @@ import WidgetDashboard
 
 Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '840')
-Config.set('graphics', 'height', '420')
+Config.set('graphics', 'height', '480')
 
 class Application(App):
 

@@ -183,7 +183,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                 ## Use math  filter by station
                 #
                 if station not in self.blemacid:
-                    self.blemacid[station]= RingBuffer(8)
+                    self.blemacid[station]= RingBuffer(6)
                 self.blemacid[station].append( _rssi )
                                 
                 #_rssi = self.kalman_filter(self.blemacid[station].get(), A=1, H=1, Q=1, R=1)
@@ -191,7 +191,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                 #_rssi = min( self.blemacid[station] )
                 self.beacons[mac][station] = {
                     'rssi': math.floor(_rssi),
-                    'timestamp': 0 #datetime.now().timestamp()
+                    'timestamp': 0 
                 }
         pass
         
