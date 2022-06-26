@@ -62,21 +62,15 @@ class RootWidget(BoxLayout,EventDispatcher):
     stop    = threading.Event()         # флаг выхода из потока
     client  = mqtt.Client("client-001")
 
-    errors          = [];    #
     beacons         = {};   # 
     stations        = {};  #
-    sortedBeacons   = {}
-    knownBeacons    = []
-
-
-    blemacid = {"9c:9c:1f:10:1b:46": KalmanFilter(1,1)}
+    ble_rssi_history = {"9c:9c:1f:10:1b:46": KalmanFilter(1,1)}
 
     def __init__(self, **kwargs):
         super(RootWidget, self).__init__(**kwargs)
-        # Наши события
+        # Регестрируем дефолтные обработчики
         self.register_event_type('on_ble_update_event')
         self.register_event_type('on_ble_new_station') 
-
    
     def cmd_connect(self):
         if self.stop.is_set() == False:
@@ -99,8 +93,8 @@ class RootWidget(BoxLayout,EventDispatcher):
     def thread_mqtt_loop(self):
         connack_rc = -1
         try:
-            self.client.on_connect=self.on_mqtt_connect
-            self.client.on_message=self.on_mqtt_message
+            self.client.on_connect = self.on_mqtt_connect
+            self.client.on_message = self.on_mqtt_message
             self.client.connect('192.168.4.1')
 
             self.client.loop_start()
@@ -129,7 +123,7 @@ class RootWidget(BoxLayout,EventDispatcher):
 
     def on_mqtt_connect(self, userdata, flags, rc, t1):
         print("**")
-        print("** Connected with result code "+str(rc))
+        print("** Connected to broker result_code: "+str(rc))
         print("**")
         self.client.subscribe('/beacons/office')
     
@@ -139,9 +133,7 @@ class RootWidget(BoxLayout,EventDispatcher):
     def on_mqtt_message(self, userdata, rc1, message ):
         json_str = str(message.payload.decode("utf-8"))
         json_obj = None
-        
-        # отладка
-        # print("received message =",json_str)
+        # print("mqtt_ message: ",json_str)
         
         # Разбираем пакет и заполняем массивы
         # 
@@ -160,6 +152,7 @@ class RootWidget(BoxLayout,EventDispatcher):
                     'x':0,
                     'y':0
                 }
+                # Генерируем Event
                 self.dispatch('on_ble_new_station', station, self.stations[station])
             pass
 
@@ -177,29 +170,29 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if mac not in self.beacons :
                     self.beacons[mac] = {}
                 
-                _rssi = int(json_obj['e'][i]['r'])
+                _raw_rssi = int(json_obj['e'][i]['r'])
 
-                ###
-                ## math  filter by station
-                # Собираем RSSI значения для пост обработки 
+                # пост обработка RSSI 
                 
                 # Если записи еще нет создаем
-                if station not in self.blemacid:
-                    self.blemacid[station]= RingBuffer(10)
-                self.blemacid[station].append( _rssi )
-                                
-                #_rssi = self.kalman_filter(self.blemacid[station].get(), A=2, H=2, Q=1, R=1)
-                #_rssi = sum(self.blemacid[station]) / len(self.blemacid[station])
-                _rssi = min( self.blemacid[station] )
+                if station not in self.ble_rssi_history:
+                    self.ble_rssi_history[station]= RingBuffer(12)
+                self.ble_rssi_history[station].append( _raw_rssi )
+            ###
+            ## Math  filter for RSSI
+            #
+                #_rssi = self.kalman_filter(self.ble_rssi_history[station].get(), A=1, H=1, Q=1, R=1)
+                #_rssi = sum(self.ble_rssi_history[station]) / len(self.ble_rssi_history[station])
+                _rssi = min( self.ble_rssi_history[station] )
 
-                # Обновляем запись
+                # Обновляем запись в глобальной таблице
                 self.beacons[mac][station] = {
-                    'rssi': math.floor(_rssi),
-                    'timestamp': 0 
+                    'rssi'      : math.floor(_rssi),
+                    'timestamp' : 0 
                 }
         pass
         
-        # данные готовы
+        # Генерируем Event
         _tuple = (self.stations, self.beacons)
         self.dispatch('on_ble_update_event', _tuple)
 

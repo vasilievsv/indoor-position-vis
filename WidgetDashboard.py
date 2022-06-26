@@ -36,7 +36,7 @@ class WidgetDashboard(FloatLayout):
 
 
     _widthMeters    = 41
-    _screenw        = 300
+    px_scale_factor        = 300
     _power          = -69
     _A              = -41
     _N              = 4
@@ -88,7 +88,7 @@ class WidgetDashboard(FloatLayout):
                     pass
 
                 # CALCULATE POSITION COORDINATES
-                coords = self.FindPosition( _beacons[key], _station, float(self._screenw / 1.85) )
+                coords = self.FindPosition( _beacons[key], _station, float(self.px_scale_factor / 1.85) )
                 #print(coords)
 
                 if coords != None:
@@ -129,7 +129,7 @@ class WidgetDashboard(FloatLayout):
         ]
 
     # Отладка
-        print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
+        print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self.px_scale_factor)
 
         _output = self.Trilat(_input)
         
@@ -146,12 +146,6 @@ class WidgetDashboard(FloatLayout):
     def CalculateDistance(self, rssi, px_meter):
     
     # Вариант 1
-        ###расчет через опорную точку
-        #A = self._A #-47.370
-        #N = self._N #-67.1
-        #return exp((A-int(rssi))/N) *px_meter
-
-    # Вариант 2
     # https://medium.com/beingcoders/convert-rssi-value-of-the-ble-bluetooth-low-energy-beacons-to-meters-63259f307283
         _P = self._A            # beacon broadcast power in dBm at 1 m (Tx Power) 
         _S = int(rssi)          # measured signal value (RSSI) in dBm 
@@ -160,8 +154,15 @@ class WidgetDashboard(FloatLayout):
         #_d = math.pow(10, (_P-_S) / (10*_n))
         _d = math.pow(10,((_S-_P)/(-10*_n))) * px_meter
         return _d 
+
+    # Вариант 2
+        ###расчет через опорную точку ( координаты расчитаны )
+        #A = self._A #-47.370
+        #N = self._N #-67.1
+        #return exp((A-int(rssi))/N) *px_meter
         
      # Вариант 3
+     # От Android'a 
 #        ratio = rssi*1.0/self._A;
 #
 #        if ratio < 1.0 :
@@ -187,13 +188,15 @@ class WidgetDashboard(FloatLayout):
             r1= dist_A = (input[0][2])
             r2= dist_B = (input[1][2])
             r3= dist_C = (input[2][2])
-            
+# ВАРИАНТ 1
 #            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
 #            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
 #
 #            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
 #            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
 #
+
+# ВАРИАНТ 2
             A = 2*x2 - 2*x1
             B = 2*y2 - 2*y1
             C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
@@ -203,10 +206,9 @@ class WidgetDashboard(FloatLayout):
             x = (C*E - F*B) / (E*A - B*D)
             y = (C*D - A*F) / (B*D - A*E)
 
-
             return (x,y)
         except:
-            print("Trilat: divid_error") 
+            print("Trilateration: divide_error") 
          
         return (0,0)
 
