@@ -172,23 +172,25 @@ class RootWidget(BoxLayout,EventDispatcher):
                 if {mac, station} <= self.beacons.keys():
                    del (self.beacons[mac][station])
                 
+                _rssi = int(json_obj['e'][i]['r'])
+
                 # Если ключа нет в списке, 
                 # создаем новую запись
                 if mac not in self.beacons :
                     self.beacons[mac] = {}
                 
-                # Kalman filter by station
+                # Use math  filter by station
                 #
                 if station not in self.blemacid:
-                    self.blemacid[station]= RingBuffer(3)
-                self.blemacid[station].append( int(json_obj['e'][i]['r']))
-                
-                foo = self.kalman_filter(self.blemacid[station].get(), A=1, H=1, Q=1, R=1)
-                #print(station,"origin:",int(json_obj['e'][i]['r']), "filtered:",foo)
-
+                    self.blemacid[station]= RingBuffer(8)
+                self.blemacid[station].append( _rssi )
+                                
+                #_rssi = self.kalman_filter(self.blemacid[station].get(), A=1, H=1, Q=1, R=1)
+                _rssi = sum(self.blemacid[station]) / len(self.blemacid[station])
+                #_rssi = min( self.blemacid[station] )
                 self.beacons[mac][station] = {
-                    'rssi':  foo,
-                    'timestamp': datetime.now().timestamp()
+                    'rssi': math.floor(_rssi),
+                    'timestamp': 0 #datetime.now().timestamp()
                 }
         pass
         
@@ -250,4 +252,4 @@ class RootWidget(BoxLayout,EventDispatcher):
 
             predicted_signal.append(x)                # update predicted signal with this step calculation
 
-        return x
+        return int(x)
