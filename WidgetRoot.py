@@ -180,15 +180,19 @@ class RootWidget(BoxLayout,EventDispatcher):
                 _rssi = int(json_obj['e'][i]['r'])
 
                 ###
-                ## Use math  filter by station
-                #
+                ## math  filter by station
+                # Собираем RSSI значения для пост обработки 
+                
+                # Если записи еще нет создаем
                 if station not in self.blemacid:
                     self.blemacid[station]= RingBuffer(10)
                 self.blemacid[station].append( _rssi )
                                 
                 #_rssi = self.kalman_filter(self.blemacid[station].get(), A=2, H=2, Q=1, R=1)
                 #_rssi = sum(self.blemacid[station]) / len(self.blemacid[station])
-                _rssi = max( self.blemacid[station] )
+                _rssi = min( self.blemacid[station] )
+
+                # Обновляем запись
                 self.beacons[mac][station] = {
                     'rssi': math.floor(_rssi),
                     'timestamp': 0 

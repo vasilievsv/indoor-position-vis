@@ -42,7 +42,7 @@ class WidgetDashboard(FloatLayout):
     _N              = 4
 
 #
-# Event Handler
+# on_ble_new_station
 #
     @mainthread
     def on_ble_new_station(self, *args):
@@ -62,6 +62,9 @@ class WidgetDashboard(FloatLayout):
         if "4C" in  _key:
             self.station_coords[_key].pos = (300,20)
 
+#
+# on_ble_update_event
+#
     @mainthread
     def on_ble_update_event(self, *args):
         _station        = args[1][0]
@@ -76,7 +79,7 @@ class WidgetDashboard(FloatLayout):
 
         # Отладка
         #   значения RSSI до маячка с 3 станций
-                print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
+               #print("on_ble_data -> "+key+" :" + str(_beacons[key]) )
 
                 # Добавляем картинку если новый объект
                 if key not in self.beacon_coords:
@@ -126,7 +129,7 @@ class WidgetDashboard(FloatLayout):
         ]
 
     # Отладка
-        #print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
+        print("trilat_dist:",node_1_dst,node_2_dst,node_3_dst, self._A, self._N, self._screenw)
 
         _output = self.Trilat(_input)
         
@@ -153,8 +156,10 @@ class WidgetDashboard(FloatLayout):
         _P = self._A            # beacon broadcast power in dBm at 1 m (Tx Power) 
         _S = int(rssi)          # measured signal value (RSSI) in dBm 
         _n = self._N            # environmental factor 
-        _d = math.pow(10, (_P-_S) / (10*_n))
-        return _d *px_meter
+       
+        #_d = math.pow(10, (_P-_S) / (10*_n))
+        _d = math.pow(10,((_S-_P)/(-10*_n))) * px_meter
+        return _d 
         
      # Вариант 3
 #        ratio = rssi*1.0/self._A;
@@ -168,26 +173,36 @@ class WidgetDashboard(FloatLayout):
     def Trilat(self, input):
         try:
             # Координаиты 1 станции
-            Xa = input[0][0] 
-            Ya = input[0][1]
+            x1 = Xa = input[0][0] 
+            y1 = Ya = input[0][1]
 
             # Координаиты 2 станции
-            Xb = input[1][0]
-            Yb = input[1][1]
+            x2 = Xb = input[1][0]
+            y2 = Yb = input[1][1]
 
             # Координаиты 3 станции
-            Xc = input[2][0]
-            Yc = input[2][1]
+            x3 = Xc = input[2][0]
+            y3 = Yc = input[2][1]
 
-            dist_A = (input[0][2])
-            dist_B = (input[1][2])
-            dist_C = (input[2][2])
+            r1= dist_A = (input[0][2])
+            r2= dist_B = (input[1][2])
+            r3= dist_C = (input[2][2])
             
-            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
-            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
+#            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
+#            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
+#
+#            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
+#            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
+#
+            A = 2*x2 - 2*x1
+            B = 2*y2 - 2*y1
+            C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
+            D = 2*x3 - 2*x2
+            E = 2*y3 - 2*y2
+            F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
+            x = (C*E - F*B) / (E*A - B*D)
+            y = (C*D - A*F) / (B*D - A*E)
 
-            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
-            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
 
             return (x,y)
         except:
