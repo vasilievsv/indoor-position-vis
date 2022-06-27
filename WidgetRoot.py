@@ -183,7 +183,7 @@ class RootWidget(BoxLayout,EventDispatcher):
             #
                 #_rssi = self.kalman_filter(self.ble_rssi_history[station].get(), A=1, H=1, Q=1, R=1)
                 #_rssi = sum(self.ble_rssi_history[station]) / len(self.ble_rssi_history[station])
-                _rssi = min( self.ble_rssi_history[station] )
+                _rssi = max( self.ble_rssi_history[station] )
 
                 # Обновляем запись в глобальной таблице
                 self.beacons[mac][station] = {

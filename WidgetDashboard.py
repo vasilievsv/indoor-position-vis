@@ -189,22 +189,22 @@ class WidgetDashboard(FloatLayout):
             r2= dist_B = (input[1][2])
             r3= dist_C = (input[2][2])
 # ВАРИАНТ 1
-#            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
-#            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
-#
-#            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
-#            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
-#
+            Va = ((Xc**2 - Xb**2) + (Yc**2 - Yb**2) + (dist_B**2 - dist_C**2))/2
+            Vb = ((Xa**2 - Xb**2) + (Ya**2 - Yb**2) + (dist_B**2 - dist_A**2))/2
+
+            y = (Vb*(Xb-Xc)-Va*(Xb-Xa))/((Ya-Yb)*(Xb-Xc)-(Yc-Yb)*(Xb-Xc))
+            x = -1 * (Va+y*(Yb-Yc))/(Xb-Xc)
+
 
 # ВАРИАНТ 2
-            A = 2*x2 - 2*x1
-            B = 2*y2 - 2*y1
-            C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
-            D = 2*x3 - 2*x2
-            E = 2*y3 - 2*y2
-            F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
-            x = (C*E - F*B) / (E*A - B*D)
-            y = (C*D - A*F) / (B*D - A*E)
+            #A = 2*x2 - 2*x1
+            #B = 2*y2 - 2*y1
+            #C = r1**2 - r2**2 - x1**2 + x2**2 - y1**2 + y2**2
+            #D = 2*x3 - 2*x2
+            #E = 2*y3 - 2*y2
+            #F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
+            #x = (C*E - F*B) / (E*A - B*D)
+            #y = (C*D - A*F) / (B*D - A*E)
 
             return (x,y)
         except:
