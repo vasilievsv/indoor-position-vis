@@ -1,13 +1,15 @@
 #### Визуализатор положения
 
+![Image](./documentation/img_1.png)
+
 #### Установка gui фреймфорка
 ```
-python --version
+$ python --version
+Python 3.10.5
 
-pip3 install kivy
-pip3 install paho-mqtt
-pip3 install lmfit
-pip3 install filterpy```
+$ pip3 install kivy paho-mqtt lmfit filterpy
+$ python .\app.py
+```
 
 #### Описание метода 
 ```
